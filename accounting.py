@@ -113,23 +113,24 @@ class AccountingSystem:
         credit_accounts = []
         for name, account in self.flow_accounts.items():
             side, balance = account.get_balance()
-            if side == s.DEBIT:
-                profit -= balance
-                credit_accounts.append((name,balance))
-            else:
-                profit += balance
-                debit_accounts.append((name,balance))
+            if balance>0:
+                if side == s.DEBIT:
+                    profit -= balance
+                    credit_accounts.append((name,balance))
+                else:
+                    profit += balance
+                    debit_accounts.append((name,balance))
 
         self.profit_history.append((debit_accounts,credit_accounts))
-        self.booking_history.append('end of period')
         
         if profit > 0:
             credit_accounts.append((self.residual_account_name,profit))
         else:
             debit_accounts.append((self.residual_account_name,-profit))
 
-        self.book(debit=debit_accounts, credit=credit_accounts)
-
+        self.book(debit=debit_accounts, credit=credit_accounts, text='Period close')
+        self.booking_history.append('end of period')
+        
         for account in self.flow_accounts:
             account = Account()
 
