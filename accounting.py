@@ -19,6 +19,10 @@ class Account:
         else:
             return (s.CREDIT, creditsum - debitsum)
 
+    def print_balance(self):
+        print('debit', self.debit)
+        print('credit', self.credit)
+
 
 class AccountingSystem:
     def __init__(self, residual_account_name='equity'):
@@ -49,8 +53,9 @@ class AccountingSystem:
         self.accounts[name] = account
         self.residual_account = account
 
-    def list_books(self):
-        return list(self.accounts)
+    def print_balance_sheet(self):
+        for name, account in self.stock_accounts.items():
+            print (name, account.get_balance())
 
     def book(self, debit, credit):
         assert sum([value for _, value in debit]) == \
@@ -63,10 +68,12 @@ class AccountingSystem:
             self.accounts[account].credit.append(value)
 
     def get_total_assets(self):
-        balance = 0
+        total_assets = 0
         for account in self.stock_accounts.values():
-            balance += sum(account.debit)
-        return balance
+            side, balance = account.get_balance()
+            if side == s.DEBIT:
+                total_assets += balance
+        return total_assets
 
     def _check_debit_eq_credit(self):
         debitsum = 0
@@ -75,13 +82,6 @@ class AccountingSystem:
             debitsum += sum(account.debit)
             creditsum += sum(account.credit)
         return debitsum == creditsum
-
-
-
-
-
-
-
 
 
 accounts = AccountingSystem()
@@ -101,7 +101,11 @@ assert accounts['cash'].get_balance() == (s.DEBIT, 50)
 assert accounts['claims'].get_balance() == (s.DEBIT, 50)
 assert accounts['equity'].get_balance() == (s.CREDIT, 100)
 
-accounts.book(debit=[('expenditure',20)], credit=[('cash',20)])
+accounts.print_balance_sheet()
+
+accounts.book(debit=[('expenditure', 20)], credit=[('cash', 20)])
+print('--')
+accounts.print_balance_sheet()
 
 assert accounts.get_total_assets() == 80, accounts.get_total_assets()
 
