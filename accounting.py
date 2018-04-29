@@ -5,6 +5,9 @@ class s(Enum):
     DEBIT = 0
     CREDIT = 1
 
+    def __repr__(self):
+        return self.name
+
 
 class Account:
     def __init__(self):
