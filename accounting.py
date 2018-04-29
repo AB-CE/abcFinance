@@ -30,6 +30,7 @@ class AccountingSystem:
         self.flow_accounts = {}
         self.accounts = {}
         self.residual_account = None
+        self.residual_account_name = residual_account_name
         self.make_residual_account(residual_account_name)
 
     def __getitem__(self, item):
@@ -55,6 +56,10 @@ class AccountingSystem:
 
     def print_balance_sheet(self):
         for name, account in self.stock_accounts.items():
+            print (name, account.get_balance())
+
+    def print_profit_and_loss(self):
+        for name, account in self.flow_accounts.items():
             print (name, account.get_balance())
 
     def book(self, debit, credit):
@@ -83,11 +88,33 @@ class AccountingSystem:
             creditsum += sum(account.credit)
         return debitsum == creditsum
 
+    def make_end_of_period(self):
+        profit = 0
+        debit_accounts = []
+        credit_accounts = []
+        for name, account in self.flow_accounts.items():
+            side, balance = account.get_balance()
+            if side == s.DEBIT:
+                profit -= balance
+                credit_accounts.append((name,balance))
+            else:
+                profit += balance
+                debit_accounts.append((name,balance))
 
-accounts = AccountingSystem()
+        if profit > 0:
+            credit_accounts.append((self.residual_account_name,profit))
+        else:
+            debit_accounts.append((self.residual_account_name,-profit))
+
+        self.book(debit=debit_accounts, credit=credit_accounts)
+
+        for account in self.flow_accounts:
+            account = Account()
+
+accounts = AccountingSystem('equity')
 
 
-accounts.make_stock_account(['cash', 'claims', 'equity'])
+accounts.make_stock_account(['cash', 'claims'])
 accounts.make_flow_account(['expenditure'])
 
 accounts.book(
@@ -101,12 +128,16 @@ assert accounts['cash'].get_balance() == (s.DEBIT, 50)
 assert accounts['claims'].get_balance() == (s.DEBIT, 50)
 assert accounts['equity'].get_balance() == (s.CREDIT, 100)
 
-accounts.print_balance_sheet()
-
 accounts.book(debit=[('expenditure', 20)], credit=[('cash', 20)])
-print('--')
-accounts.print_balance_sheet()
 
 assert accounts.get_total_assets() == 80, accounts.get_total_assets()
 
-assert accounts['equity'].get_balance() == 80
+accounts.print_profit_and_loss()
+print('--')
+accounts.make_end_of_period()
+
+accounts.print_profit_and_loss()
+
+accounts.print_balance_sheet()
+
+assert accounts['equity'].get_balance() == (s.CREDIT, 80)
