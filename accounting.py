@@ -33,6 +33,7 @@ class AccountingSystem:
         self.flow_accounts = {}
         self.accounts = {}
         self.residual_account = None
+        self.history = []
         self.residual_account_name = residual_account_name
         self.make_residual_account(residual_account_name)
 
@@ -58,12 +59,16 @@ class AccountingSystem:
         self.residual_account = account
 
     def print_balance_sheet(self):
+        print('Stock accounts:')
         for name, account in self.stock_accounts.items():
             print (name, account.get_balance())
+        print('--')
 
     def print_profit_and_loss(self):
+        print('Flow accounts:')
         for name, account in self.flow_accounts.items():
             print (name, account.get_balance())
+        print('--')
 
     def book(self, debit, credit):
         assert sum([value for _, value in debit]) == \
@@ -104,6 +109,8 @@ class AccountingSystem:
                 profit += balance
                 debit_accounts.append((name,balance))
 
+        self.history.append((debit_accounts,credit_accounts))
+        
         if profit > 0:
             credit_accounts.append((self.residual_account_name,profit))
         else:
@@ -136,7 +143,7 @@ accounts.book(debit=[('expenditure', 20)], credit=[('cash', 20)])
 assert accounts.get_total_assets() == 80, accounts.get_total_assets()
 
 accounts.print_profit_and_loss()
-print('--')
+
 accounts.make_end_of_period()
 
 accounts.print_profit_and_loss()
