@@ -62,13 +62,21 @@ class AccountingSystem:
     def print_balance_sheet(self):
         print('Stock accounts:')
         for name, account in self.stock_accounts.items():
-            print (name, account.get_balance())
+            print (name, ":", account.get_balance())
         print('--')
 
     def print_profit_and_loss(self):
+        profit = 0
         print('Flow accounts:')
         for name, account in self.flow_accounts.items():
-            print (name, account.get_balance())
+            side, balance = account.get_balance()
+            if balance != 0:
+                print (name, ":", side, balance)
+                if side == s.DEBIT:
+                    profit -= balance
+                else:
+                    profit += balance
+        print("Profit for period: ",profit)
         print('--')
 
     def book(self, debit, credit, text=""):
