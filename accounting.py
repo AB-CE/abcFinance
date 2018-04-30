@@ -1,8 +1,8 @@
-""" Project pastis is a simples implementation of an double entry book keeping system
+""" Project abcFinance is a simple implementation of a double entry book keeping system
 
 Initialize the accounting system with, the name of the residual_account::
 
-    accounts = AccountingSystem('equity')
+    accounts = AccountingSystem(residual_account_name='equity')
 
 Create stock and flow account:
 
@@ -40,33 +40,12 @@ Balance sheet
 """
 from enum import Enum
 
-
-class s(Enum):
-    DEBIT = 0
-    CREDIT = 1
-
-    def __repr__(self):
-        return self.name
-
-
-class Account:
-    def __init__(self):
-        self.debit = []
-        self.credit = []
-
-    def get_balance(self):
-        debitsum = sum(self.debit)
-        creditsum = sum(self.credit)
-        if debitsum > creditsum:
-            return (s.DEBIT, debitsum - creditsum)
-        else:
-            return (s.CREDIT, creditsum - debitsum)
-
-    def print_balance(self):
-        print('debit', self.debit)
-        print('credit', self.credit)
-
-
+"""
+-------------------------------------------------------------------------------
+AccountingSystem class
+-------------------------------------------------------------------------------
+The main class to be initialized
+"""
 class AccountingSystem:
     def __init__(self, residual_account_name='equity'):
         self.stock_accounts = {}
@@ -80,7 +59,10 @@ class AccountingSystem:
 
     def __getitem__(self, item):
         return self.accounts[item]
-
+    
+    """
+    Methods to create accounts - for initializing the accounting system
+    """
     def make_stock_account(self, names):
         for name in names:
             account = Account()
@@ -98,27 +80,11 @@ class AccountingSystem:
         self.stock_accounts[name] = account
         self.accounts[name] = account
         self.residual_account = account
-
-    def print_balance_sheet(self):
-        print('Stock accounts:')
-        for name, account in self.stock_accounts.items():
-            print (name, ":", account.get_balance())
-        print('--')
-
-    def print_profit_and_loss(self):
-        profit = 0
-        print('Flow accounts:')
-        for name, account in self.flow_accounts.items():
-            side, balance = account.get_balance()
-            if balance != 0:
-                print (name, ":", side, balance)
-                if side == s.DEBIT:
-                    profit -= balance
-                else:
-                    profit += balance
-        print("Profit for period: ", profit)
-        print('--')
-
+    
+    """
+    book and make_end_of_period - the main methods for using the accounting
+    system
+    """
     def book(self, debit, credit, text=""):
         assert sum([value for _, value in debit]) == \
             sum([value for _, value in credit])
@@ -130,23 +96,7 @@ class AccountingSystem:
             self.accounts[account].credit.append(value)
 
         self.booking_history.append((text, debit, credit))
-
-    def get_total_assets(self):
-        total_assets = 0
-        for account in self.stock_accounts.values():
-            side, balance = account.get_balance()
-            if side == s.DEBIT:
-                total_assets += balance
-        return total_assets
-
-    def _check_debit_eq_credit(self):
-        debitsum = 0
-        creditsum = 0
-        for account in self.accounts.values():
-            debitsum += sum(account.debit)
-            creditsum += sum(account.credit)
-        return debitsum == creditsum
-
+    
     def make_end_of_period(self):
         profit = 0
         debit_accounts = []
@@ -169,31 +119,111 @@ class AccountingSystem:
             debit_accounts.append((self.residual_account_name, -profit))
 
         self.book(debit=debit_accounts, credit=credit_accounts, text='Period close')
-        self.booking_history.append('end of period')
 
         for account in self.flow_accounts:
             account = Account()
+    
+    """
+    Print functions - print contents of the accounting system to stdout
+    """
+    def print_balance_sheet(self):
+        print('Stock accounts:')
+        for name, account in self.stock_accounts.items():
+            print (name, ":", account.get_balance())
+        print('--')
+
+    def print_profit_and_loss(self):
+        profit = 0
+        print('Flow accounts:')
+        for name, account in self.flow_accounts.items():
+            side, balance = account.get_balance()
+            if balance != 0:
+                print (name, ":", side, balance)
+                if side == s.DEBIT:
+                    profit -= balance
+                else:
+                    profit += balance
+        print("Profit for period: ", profit)
+        print('--')
+
+    """
+    Other utilities
+    """
+    def get_total_assets(self):
+        total_assets = 0
+        for account in self.stock_accounts.values():
+            side, balance = account.get_balance()
+            if side == s.DEBIT:
+                total_assets += balance
+        return total_assets
+
+    def _check_debit_eq_credit(self):
+        debitsum = 0
+        creditsum = 0
+        for account in self.accounts.values():
+            debitsum += sum(account.debit)
+            creditsum += sum(account.credit)
+        return debitsum == creditsum
+
+"""
+-------------------------------------------------------------------------------
+Account class
+-------------------------------------------------------------------------------
+An account consists of a list of debit and credit bookings and has a balance on
+one of the two sides (if it is not empty)
+"""
+
+class Account:
+    def __init__(self):
+        self.debit = []
+        self.credit = []
+
+    def get_balance(self):
+        debitsum = sum(self.debit)
+        creditsum = sum(self.credit)
+        if debitsum > creditsum:
+            return (s.DEBIT, debitsum - creditsum)
+        else:
+            return (s.CREDIT, creditsum - debitsum)
+
+    def print_balance(self):
+        print('debit', self.debit)
+        print('credit', self.credit)
+
+"""
+-------------------------------------------------------------------------------
+s class
+-------------------------------------------------------------------------------
+Side of the balance sheet. Utility to track on which side of the balance of an 
+account is.
+"""
+class s(Enum):
+    DEBIT = 0
+    CREDIT = 1
+
+    def __repr__(self):
+        return self.name
 
 
+"""
+-------------------------------------------------------------------------------
+Example implementation
+-------------------------------------------------------------------------------
+"""
+
+print('Initial balance')
 accounts = AccountingSystem('equity')
-
-
 accounts.make_stock_account(['cash', 'claims', 'inventory'])
 accounts.make_flow_account(['expenditure', 'revenue', 'cost of goods sold', 'depreciation'])
-
 accounts.book(
     debit=[('cash', 50), ('claims', 50)],
     credit=[('equity', 100)],
     text="Start with owners' equity, partially paid in")
-
 assert accounts._check_debit_eq_credit()
 assert accounts.get_total_assets() == 100
-
 assert accounts['cash'].get_balance() == (s.DEBIT, 50)
 assert accounts['claims'].get_balance() == (s.DEBIT, 50)
 assert accounts['equity'].get_balance() == (s.CREDIT, 100)
-
-print('Initial balance')
 accounts.print_balance_sheet()
 
 print('Some purchases and operating expenses')
