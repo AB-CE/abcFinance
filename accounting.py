@@ -77,7 +77,7 @@ class AccountingSystem:
         self.profit_history = []
         self.booking_history = []
         self.residual_account_name = residual_account_name
-        self.make_residual_account(residual_account_name)
+        self._make_residual_account(residual_account_name)
 
     def __getitem__(self, item):
         return self.accounts[item]
@@ -104,7 +104,7 @@ class AccountingSystem:
             self.flow_accounts[name] = account
             self.accounts[name] = account
 
-    def make_residual_account(self, name):
+    def _make_residual_account(self, name):
         account = Account()
         self.stock_accounts[name] = account
         self.accounts[name] = account
