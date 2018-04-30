@@ -20,7 +20,7 @@ get balance gives you the balance of an account:
 
     assert accounts['cash'].get_balance() == (s.DEBIT, 50)
 
-Balance sheet
+Example::
 
     accounts.book(debit=[('expenditure', 20)], credit=[('cash', 20)])
 
