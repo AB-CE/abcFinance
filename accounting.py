@@ -68,6 +68,7 @@ class Account:
 
 
 class AccountingSystem:
+    """ The main class to be initialized """
     def __init__(self, residual_account_name='equity'):
         self.stock_accounts = {}
         self.flow_accounts = {}
@@ -82,12 +83,22 @@ class AccountingSystem:
         return self.accounts[item]
 
     def make_stock_account(self, names):
+        """ Create stock accounts.
+
+        Args:
+            names, list of names for the accounts
+        """
         for name in names:
             account = Account()
             self.stock_accounts[name] = account
             self.accounts[name] = account
 
     def make_flow_account(self, names):
+        """ Create flow accounts.
+
+        Args:
+            names, list of names for the accounts
+        """
         for name in names:
             account = Account()
             self.flow_accounts[name] = account
@@ -99,27 +110,20 @@ class AccountingSystem:
         self.accounts[name] = account
         self.residual_account = account
 
-    def print_balance_sheet(self):
-        print('Stock accounts:')
-        for name, account in self.stock_accounts.items():
-            print (name, ":", account.get_balance())
-        print('--')
-
-    def print_profit_and_loss(self):
-        profit = 0
-        print('Flow accounts:')
-        for name, account in self.flow_accounts.items():
-            side, balance = account.get_balance()
-            if balance != 0:
-                print (name, ":", side, balance)
-                if side == s.DEBIT:
-                    profit -= balance
-                else:
-                    profit += balance
-        print("Profit for period: ", profit)
-        print('--')
-
     def book(self, debit, credit, text=""):
+        """ Book a transaction.
+
+        Arguments:
+            debit, list of tuples ('account', amount)
+
+            credit, list of tuples ('account', amount)
+
+            text, for booking history
+
+        Example::
+
+            accounts.book(debit=[('inventory',20)], credit=[('cash',20)], text="Purchase of equipment")
+        """
         assert sum([value for _, value in debit]) == \
             sum([value for _, value in credit])
 
@@ -131,23 +135,8 @@ class AccountingSystem:
 
         self.booking_history.append((text, debit, credit))
 
-    def get_total_assets(self):
-        total_assets = 0
-        for account in self.stock_accounts.values():
-            side, balance = account.get_balance()
-            if side == s.DEBIT:
-                total_assets += balance
-        return total_assets
-
-    def _check_debit_eq_credit(self):
-        debitsum = 0
-        creditsum = 0
-        for account in self.accounts.values():
-            debitsum += sum(account.debit)
-            creditsum += sum(account.credit)
-        return debitsum == creditsum
-
     def make_end_of_period(self):
+        """ Close flow accounts and credit/debit residual (equity) account """
         profit = 0
         debit_accounts = []
         credit_accounts = []
@@ -173,6 +162,45 @@ class AccountingSystem:
 
         for account in self.flow_accounts:
             account = Account()
+
+    def get_total_assets(self):
+        """ Return total assets. """
+        total_assets = 0
+        for account in self.stock_accounts.values():
+            side, balance = account.get_balance()
+            if side == s.DEBIT:
+                total_assets += balance
+        return total_assets
+
+    def _check_debit_eq_credit(self):
+        debitsum = 0
+        creditsum = 0
+        for account in self.accounts.values():
+            debitsum += sum(account.debit)
+            creditsum += sum(account.credit)
+        return debitsum == creditsum
+
+    def print_balance_sheet(self):
+        """ Print a balance sheets """
+        print('Stock accounts:')
+        for name, account in self.stock_accounts.items():
+            print (name, ":", account.get_balance())
+        print('--')
+
+    def print_profit_and_loss(self):
+        """ Print profit and loss statement """
+        profit = 0
+        print('Flow accounts:')
+        for name, account in self.flow_accounts.items():
+            side, balance = account.get_balance()
+            if balance != 0:
+                print (name, ":", side, balance)
+                if side == s.DEBIT:
+                    profit -= balance
+                else:
+                    profit += balance
+        print("Profit for period: ", profit)
+        print('--')
 
 
 accounts = AccountingSystem('equity')
