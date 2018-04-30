@@ -1,3 +1,43 @@
+""" Project pastis is a simples implementation of an double entry book keeping system
+
+Initialize the accounting system with, the name of the residual_account::
+
+    accounts = AccountingSystem('equity')
+
+Create stock and flow account:
+
+    accounts.make_stock_account(['cash', 'claims'])
+    accounts.make_flow_account(['expenditure'])
+
+In order to book give a list of credit and debit tuples. Each tuple should be
+an account and a value::
+
+    accounts.book(
+        debit=[('cash', 50), ('claims', 50)],
+        credit=[('equity', 100)])
+
+get balance gives you the balance of an account:
+
+    assert accounts['cash'].get_balance() == (s.DEBIT, 50)
+
+Balance sheet
+
+    accounts.book(debit=[('expenditure', 20)], credit=[('cash', 20)])
+
+    assert accounts.get_total_assets() == 80, accounts.get_total_assets()
+
+    accounts.print_profit_and_loss()
+    print('--')
+    accounts.make_end_of_period()
+
+    accounts.print_profit_and_loss()
+
+    accounts.print_balance_sheet()
+
+    assert accounts['equity'].get_balance() == (s.CREDIT, 80)
+
+
+"""
 from enum import Enum
 
 
@@ -76,7 +116,7 @@ class AccountingSystem:
                     profit -= balance
                 else:
                     profit += balance
-        print("Profit for period: ",profit)
+        print("Profit for period: ", profit)
         print('--')
 
     def book(self, debit, credit, text=""):
@@ -89,8 +129,8 @@ class AccountingSystem:
         for account, value in credit:
             self.accounts[account].credit.append(value)
 
-        self.booking_history.append((text,debit,credit))
-        
+        self.booking_history.append((text, debit, credit))
+
     def get_total_assets(self):
         total_assets = 0
         for account in self.stock_accounts.values():
@@ -113,32 +153,33 @@ class AccountingSystem:
         credit_accounts = []
         for name, account in self.flow_accounts.items():
             side, balance = account.get_balance()
-            if balance>0:
+            if balance > 0:
                 if side == s.DEBIT:
                     profit -= balance
-                    credit_accounts.append((name,balance))
+                    credit_accounts.append((name, balance))
                 else:
                     profit += balance
-                    debit_accounts.append((name,balance))
+                    debit_accounts.append((name, balance))
 
-        self.profit_history.append((debit_accounts,credit_accounts))
-        
+        self.profit_history.append((debit_accounts, credit_accounts))
+
         if profit > 0:
-            credit_accounts.append((self.residual_account_name,profit))
+            credit_accounts.append((self.residual_account_name, profit))
         else:
-            debit_accounts.append((self.residual_account_name,-profit))
+            debit_accounts.append((self.residual_account_name, -profit))
 
         self.book(debit=debit_accounts, credit=credit_accounts, text='Period close')
         self.booking_history.append('end of period')
-        
+
         for account in self.flow_accounts:
             account = Account()
+
 
 accounts = AccountingSystem('equity')
 
 
-accounts.make_stock_account(['cash', 'claims','inventory'])
-accounts.make_flow_account(['expenditure','revenue','cost of goods sold','depreciation'])
+accounts.make_stock_account(['cash', 'claims', 'inventory'])
+accounts.make_flow_account(['expenditure', 'revenue', 'cost of goods sold', 'depreciation'])
 
 accounts.book(
     debit=[('cash', 50), ('claims', 50)],
