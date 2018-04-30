@@ -1,3 +1,43 @@
+""" Project pastis is a simples implementation of an double entry book keeping system
+
+Initialize the accounting system with, the name of the residual_account::
+
+    accounts = AccountingSystem('equity')
+
+Create stock and flow account:
+
+    accounts.make_stock_account(['cash', 'claims'])
+    accounts.make_flow_account(['expenditure'])
+
+In order to book give a list of credit and debit tuples. Each tuple should be
+an account and a value::
+
+    accounts.book(
+        debit=[('cash', 50), ('claims', 50)],
+        credit=[('equity', 100)])
+
+get balance gives you the balance of an account:
+
+    assert accounts['cash'].get_balance() == (s.DEBIT, 50)
+
+Balance sheet
+
+    accounts.book(debit=[('expenditure', 20)], credit=[('cash', 20)])
+
+    assert accounts.get_total_assets() == 80, accounts.get_total_assets()
+
+    accounts.print_profit_and_loss()
+    print('--')
+    accounts.make_end_of_period()
+
+    accounts.print_profit_and_loss()
+
+    accounts.print_balance_sheet()
+
+    assert accounts['equity'].get_balance() == (s.CREDIT, 80)
+
+
+"""
 from enum import Enum
 
 
