@@ -116,7 +116,7 @@ class AccountingSystem:
                     profit -= balance
                 else:
                     profit += balance
-        print("Profit for period: ",profit)
+        print("Profit for period: ", profit)
         print('--')
 
     def book(self, debit, credit, text=""):
@@ -129,8 +129,8 @@ class AccountingSystem:
         for account, value in credit:
             self.accounts[account].credit.append(value)
 
-        self.booking_history.append((text,debit,credit))
-        
+        self.booking_history.append((text, debit, credit))
+
     def get_total_assets(self):
         total_assets = 0
         for account in self.stock_accounts.values():
@@ -153,32 +153,33 @@ class AccountingSystem:
         credit_accounts = []
         for name, account in self.flow_accounts.items():
             side, balance = account.get_balance()
-            if balance>0:
+            if balance > 0:
                 if side == s.DEBIT:
                     profit -= balance
-                    credit_accounts.append((name,balance))
+                    credit_accounts.append((name, balance))
                 else:
                     profit += balance
-                    debit_accounts.append((name,balance))
+                    debit_accounts.append((name, balance))
 
-        self.profit_history.append((debit_accounts,credit_accounts))
-        
+        self.profit_history.append((debit_accounts, credit_accounts))
+
         if profit > 0:
-            credit_accounts.append((self.residual_account_name,profit))
+            credit_accounts.append((self.residual_account_name, profit))
         else:
-            debit_accounts.append((self.residual_account_name,-profit))
+            debit_accounts.append((self.residual_account_name, -profit))
 
         self.book(debit=debit_accounts, credit=credit_accounts, text='Period close')
         self.booking_history.append('end of period')
-        
+
         for account in self.flow_accounts:
             account = Account()
+
 
 accounts = AccountingSystem('equity')
 
 
-accounts.make_stock_account(['cash', 'claims','inventory'])
-accounts.make_flow_account(['expenditure','revenue','cost of goods sold','depreciation'])
+accounts.make_stock_account(['cash', 'claims', 'inventory'])
+accounts.make_flow_account(['expenditure', 'revenue', 'cost of goods sold', 'depreciation'])
 
 accounts.book(
     debit=[('cash', 50), ('claims', 50)],
