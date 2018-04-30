@@ -1,4 +1,4 @@
-""" Project pastis is a simples implementation of an double entry book keeping system
+""" abcFinance is an implementation of an double entry book keeping system
 
 Initialize the accounting system with, the name of the residual_account::
 
