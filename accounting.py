@@ -95,7 +95,9 @@ class AccountingSystem:
 
         Example::
 
-            accounts.book(debit=[('inventory',20)], credit=[('cash',20)], text="Purchase of equipment")
+            accounts.book(debit=[('inventory', 20)],
+                          credit=[('cash', 20)],
+                          text="Purchase of equipment")
         """
         assert sum([value for _, value in debit]) == \
             sum([value for _, value in credit])
@@ -130,7 +132,7 @@ class AccountingSystem:
         else:
             debit_accounts.append((self.residual_account_name, -profit))
 
-        self.book(debit=debit_accounts, credit=credit_accounts, text='Period close')
+    self.book(debit=debit_accounts, credit=credit_accounts, text='Period close')
 
         for account in self.flow_accounts:
             account = Account()
@@ -178,7 +180,7 @@ class AccountingSystem:
                     print(text,":",value)
         if capital_actions:
             print('--')
-    
+
     def get_total_assets(self):
         """ Return total assets. """
         total_assets = 0
