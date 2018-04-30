@@ -2,7 +2,7 @@
 
 Initialize the accounting system with, the name of the residual_account::
 
-    accounts = AccountingSystem('equity')
+    accounts = AccountingSystem(residual_account_name='equity')
 
 Create stock and flow account:
 
@@ -39,33 +39,6 @@ Balance sheet
 
 """
 from enum import Enum
-
-
-class s(Enum):
-    DEBIT = 0
-    CREDIT = 1
-
-    def __repr__(self):
-        return self.name
-
-
-class Account:
-    def __init__(self):
-        self.debit = []
-        self.credit = []
-
-    def get_balance(self):
-        debitsum = sum(self.debit)
-        creditsum = sum(self.credit)
-        if debitsum > creditsum:
-            return (s.DEBIT, debitsum - creditsum)
-        else:
-            return (s.CREDIT, creditsum - debitsum)
-
-    def print_balance(self):
-        print('debit', self.debit)
-        print('credit', self.credit)
-
 
 class AccountingSystem:
     """ The main class to be initialized """
@@ -163,23 +136,6 @@ class AccountingSystem:
         for account in self.flow_accounts:
             account = Account()
 
-    def get_total_assets(self):
-        """ Return total assets. """
-        total_assets = 0
-        for account in self.stock_accounts.values():
-            side, balance = account.get_balance()
-            if side == s.DEBIT:
-                total_assets += balance
-        return total_assets
-
-    def _check_debit_eq_credit(self):
-        debitsum = 0
-        creditsum = 0
-        for account in self.accounts.values():
-            debitsum += sum(account.debit)
-            creditsum += sum(account.credit)
-        return debitsum == creditsum
-
     def print_balance_sheet(self):
         """ Print a balance sheets """
         print('Stock accounts:')
@@ -201,49 +157,46 @@ class AccountingSystem:
                     profit += balance
         print("Profit for period: ", profit)
         print('--')
+    
+    def get_total_assets(self):
+        """ Return total assets. """
+        total_assets = 0
+        for account in self.stock_accounts.values():
+            side, balance = account.get_balance()
+            if side == s.DEBIT:
+                total_assets += balance
+        return total_assets
 
+    def _check_debit_eq_credit(self):
+        debitsum = 0
+        creditsum = 0
+        for account in self.accounts.values():
+            debitsum += sum(account.debit)
+            creditsum += sum(account.credit)
+        return debitsum == creditsum
 
-accounts = AccountingSystem('equity')
+class Account:
+    """ An account has two lists of debit and credit bookings """
+    def __init__(self):
+        self.debit = []
+        self.credit = []
 
+    def get_balance(self):
+        debitsum = sum(self.debit)
+        creditsum = sum(self.credit)
+        if debitsum > creditsum:
+            return (s.DEBIT, debitsum - creditsum)
+        else:
+            return (s.CREDIT, creditsum - debitsum)
 
-accounts.make_stock_account(['cash', 'claims', 'inventory'])
-accounts.make_flow_account(['expenditure', 'revenue', 'cost of goods sold', 'depreciation'])
+    def print_balance(self):
+        print('debit', self.debit)
+        print('credit', self.credit)
 
-accounts.book(
-    debit=[('cash', 50), ('claims', 50)],
-    credit=[('equity', 100)],
-    text="Start with owners' equity, partially paid in")
+class s(Enum):
+    """ Side which the balance of an account falls on """
+    DEBIT = 0
+    CREDIT = 1
 
-assert accounts._check_debit_eq_credit()
-assert accounts.get_total_assets() == 100
-
-assert accounts['cash'].get_balance() == (s.DEBIT, 50)
-assert accounts['claims'].get_balance() == (s.DEBIT, 50)
-assert accounts['equity'].get_balance() == (s.CREDIT, 100)
-
-print('Initial balance')
-accounts.print_balance_sheet()
-
-print('Some purchases and operating expenses')
-accounts.book(debit=[('expenditure', 20)], credit=[('cash', 20)],text="General expenses")
-assert accounts.get_total_assets() == 80, accounts.get_total_assets()
-accounts.book(debit=[('inventory',20)],credit=[('cash',20)],text="Purchase of equipment")
-accounts.book(debit=[('depreciation',2)],credit=[('inventory',2)],text="Depreciation")
-accounts.print_profit_and_loss()
-
-print('Balance sheet after first period')
-accounts.make_end_of_period()
-accounts.print_balance_sheet()
-assert accounts['equity'].get_balance() == (s.CREDIT, 78)
-assert accounts['cash'].get_balance() == (s.DEBIT, 10),accounts['cash'].get_balance()
-
-print('Profitable sale')
-accounts.book(debit=[('cash',40)],credit=[('revenue',40)],text="Sale of goods")
-accounts.book(debit=[('cost of goods sold',10)],credit=[('inventory',10)],text="Sale of goods")
-accounts.print_profit_and_loss()
-assert accounts['inventory'].get_balance() == (s.DEBIT, 8)
-
-print('Balance sheet after second period')
-accounts.make_end_of_period()
-accounts.print_balance_sheet()
-assert accounts['equity'].get_balance() == (s.CREDIT, 108)
+    def __repr__(self):
+        return self.name
