@@ -1,0 +1,13 @@
+language: python
+
+python:
+  - "3.5"
+
+install:
+  - pip install abcEconomics
+
+script:
+  - python example_banking.py
+  - python example_tdd.py
+
+
