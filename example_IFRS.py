@@ -94,7 +94,9 @@ bank.make_stock_account([
         'Provisions',
         'Deferred tax liabilities',
         'Long-term debt',
-        'Other liabilities'
+        'Other liabilities',
+        # Equity
+        'Share capital'
         ])
 
 bank.make_flow_account([
@@ -113,6 +115,7 @@ bank.make_flow_account([
         'Compensation and benefits',
         'Administrative expenses',
         'Impairment of goodwill',
+        'Depreciation and amortisation',
         'Provisions',
         'Impairments',
         # = Profit before taxes
