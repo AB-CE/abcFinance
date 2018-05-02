@@ -60,7 +60,7 @@ corporation.make_flow_account([
         # = Profit before income tax
         'Income tax expense',
         # = Profit from continuing operations
-        'Profit/loss from discontinued operations'
+        'Net income from discontinued operations'
         # Profit for the period
         ])
 
@@ -107,12 +107,17 @@ bank.make_flow_account([
         'Net income from financial instruments at fair value through profit or loss',
         'Net income from financial assets available for sale',
         'Net income from at-equity investments',
+        'Other operating income',
+        'Other operating expenses',
+        # = Operating result
         'Compensation and benefits',
         'Administrative expenses',
         'Impairment of goodwill',
-        'Other operating income',
-        'Other operationg expenses',
         'Provisions',
         'Impairments',
+        # = Profit before taxes
         'Income tax expense'
+        # = Profit from continuing operations
+        'Net income from discontinued operations'
+        # Profit for the period
         ])
