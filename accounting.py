@@ -132,8 +132,8 @@ class AccountingSystem:
         else:
             debit_accounts.append((self.residual_account_name, -profit))
 
-    self.book(debit=debit_accounts, credit=credit_accounts, text='Period close')
-
+        self.book(debit=debit_accounts, credit=credit_accounts, text='Period close')
+        self.booking_history("Period close")
         for account in self.flow_accounts:
             account = Account()
 
