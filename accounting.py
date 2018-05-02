@@ -106,7 +106,7 @@ class AccountingSystem:
         for account, value in credit:
             self.accounts[account].credit.append(value)
 
-        self.booking_history.append((text, debit, credit))
+        self.booking_history.append((debit, credit, text))
 
     def make_end_of_period(self):
         """ Close flow accounts and credit/debit residual (equity) account """
@@ -131,7 +131,6 @@ class AccountingSystem:
             debit_accounts.append((self.residual_account_name, -profit))
 
         self.book(debit=debit_accounts, credit=credit_accounts, text='Period close')
-        self.booking_history.append('end of period')
 
         for account in self.flow_accounts:
             account = Account()
@@ -150,13 +149,35 @@ class AccountingSystem:
         for name, account in self.flow_accounts.items():
             side, balance = account.get_balance()
             if balance != 0:
-                print (name, ":", side, balance)
                 if side == s.DEBIT:
+                    print (name, ":", -balance)
                     profit -= balance
                 else:
+                    print (name, ":", balance)
                     profit += balance
+        print('--')
         print("Profit for period: ", profit)
         print('--')
+        capital_actions = False
+        for booking_statement in reversed(self.booking_history):
+            debit, credit, text = booking_statement
+            if text == "Period close":
+                break
+            for account, value in debit:
+                if account == self.residual_account_name:
+                    if not capital_actions:
+                        print("Earnings retention and capital actions")
+                        capital_actions = True
+                    print(text,":",-value)
+            for account, value in credit:
+                if account == self.residual_account_name:
+                    if account == self.residual_account_name:
+                        if not capital_actions:
+                            print("Earnings retention and capital actions")
+                            capital_actions = True
+                    print(text,":",value)
+        if capital_actions:
+            print('--')
     
     def get_total_assets(self):
         """ Return total assets. """

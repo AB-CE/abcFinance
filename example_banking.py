@@ -46,7 +46,6 @@ household.book(debit=[('expenses',1)],credit=[('money holdings',1)],text='Intere
 print('Bank PnL after interest payment')
 bank.print_profit_and_loss()
 print('Household PnL after interest payment')
-
 household.print_profit_and_loss()
 bank.make_end_of_period()
 household.make_end_of_period()
@@ -66,4 +65,18 @@ bank.print_balance_sheet()
 print('Household balance sheet after principal repayment')
 household.print_balance_sheet()
 
-
+""" ---------------------------------------------------------------------------
+Dividend payment
+"""
+bank.book(debit=[('equity',1)],credit=[('deposits',1)],text='Dividend payment')
+household.book(debit=[('money holdings',1)],credit=[('income',1)],text='Dividend payment')
+print('Bank PnL after interest payment')
+bank.print_profit_and_loss()
+print('Household PnL after interest payment')
+household.print_profit_and_loss()
+bank.make_end_of_period()
+household.make_end_of_period()
+print('Bank balance sheet after dividend payment')
+bank.print_balance_sheet()
+print('Household balance sheet after dividend payment')
+household.print_balance_sheet()
