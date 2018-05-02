@@ -51,6 +51,8 @@ class AccountingSystem:
         self.booking_history = []
         self.residual_account_name = residual_account_name
         self._make_residual_account(residual_account_name)
+        self.show_empty_flow_accounts = False
+        self.show_empty_stock_accounts = False
 
     def __getitem__(self, item):
         return self.accounts[item]
@@ -137,9 +139,28 @@ class AccountingSystem:
 
     def print_balance_sheet(self):
         """ Print a balance sheets """
-        print('Stock accounts:')
+        print('Asset accounts:')
+        total_assets = 0
         for name, account in self.stock_accounts.items():
-            print (name, ":", account.get_balance())
+            side, balance = account.get_balance()
+            if side == s.DEBIT:
+                if name == self.residual_account_name:
+                    equity = -balance
+                else:
+                    total_assets += balance
+                    if balance != 0 or self.show_empty_stock_accounts:
+                        print ("  ",name, ":", balance)
+        print('Liability accounts:')
+        for name, account in self.stock_accounts.items():
+            side, balance = account.get_balance()
+            if side == s.CREDIT:
+                if name == self.residual_account_name:
+                    equity = balance
+                else:
+                    if balance != 0 or self.show_empty_stock_accounts:
+                        print ("  ",name, ":", balance)
+        print('Equity: ',equity)
+        print('Total Assets: ',total_assets)
         print('--')
 
     def print_profit_and_loss(self):
@@ -148,16 +169,14 @@ class AccountingSystem:
         print('Flow accounts:')
         for name, account in self.flow_accounts.items():
             side, balance = account.get_balance()
-            if balance != 0:
+            if balance != 0 or self.show_empty_flow_accounts:
                 if side == s.DEBIT:
-                    print (name, ":", -balance)
+                    print ("  ",name, ":", -balance)
                     profit -= balance
                 else:
-                    print (name, ":", balance)
+                    print ("  ",name, ":", balance)
                     profit += balance
-        print('--')
         print("Profit for period: ", profit)
-        print('--')
         capital_actions = False
         for booking_statement in reversed(self.booking_history):
             debit, credit, text = booking_statement
@@ -168,16 +187,15 @@ class AccountingSystem:
                     if not capital_actions:
                         print("Earnings retention and capital actions")
                         capital_actions = True
-                    print(text,":",-value)
+                    print("  ",text,":",-value)
             for account, value in credit:
                 if account == self.residual_account_name:
                     if account == self.residual_account_name:
                         if not capital_actions:
                             print("Earnings retention and capital actions")
                             capital_actions = True
-                    print(text,":",value)
-        if capital_actions:
-            print('--')
+                    print("  ",text,":",value)
+        print('--')
     
     def get_total_assets(self):
         """ Return total assets. """
