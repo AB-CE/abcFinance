@@ -40,7 +40,7 @@ corporation.make_stock_account([
         'Deferred revenue',
         'Liabilities associated with assets classified as held for sale',
         # Equity
-        'Share capital',
+        'Share capital'
         ])
 
 corporation.make_flow_account([
