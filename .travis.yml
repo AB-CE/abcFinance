@@ -7,7 +7,7 @@ install:
   - pip install abcEconomics
 
 script:
-  - example_banking.py
-  - example_tdd.py
+  - python example_banking.py
+  - python example_tdd.py
 
 
