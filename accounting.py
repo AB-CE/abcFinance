@@ -185,14 +185,14 @@ class AccountingSystem:
             for account, value in debit:
                 if account == self.residual_account_name:
                     if not capital_actions:
-                        print("Earnings retention and capital actions")
+                        print("Profit distribution and capital actions")
                         capital_actions = True
                     print("  ",text,":",-value)
             for account, value in credit:
                 if account == self.residual_account_name:
                     if account == self.residual_account_name:
                         if not capital_actions:
-                            print("Earnings retention and capital actions")
+                            print("Profit distribution and capital actions")
                             capital_actions = True
                     print("  ",text,":",value)
         print('--')
