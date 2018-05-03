@@ -25,11 +25,11 @@ class SimpleHousehold(abce.Agent):
     def _autobook(self):
         for booking in self.get_messages('_autobook'):
             self.accounts.book(**booking.content)
-        print(self.name)
-        self.accounts.print_profit_and_loss()
+        #print(self.name)
+        #self.accounts.print_profit_and_loss()
         self.accounts.make_end_of_period()
-        self.accounts.print_balance_sheet()
-        self.log('total_assets_household',self.accounts.get_total_assets())
+        #self.accounts.print_balance_sheet()
+        self.log('total_assets',self.accounts.get_total_assets())
         
 #    def transfer_money(self,amounts,recipients,housebank_indices):
 #        amount = amounts[self.id]
@@ -49,7 +49,7 @@ class SimpleHousehold(abce.Agent):
             self.send(('bank',recipient_housebank),'Intransfer',{'amount':amount,'sender':self.id})
     
     def get_outside_money(self,amount):
-        self.send(('bank',self.housebank),'_autobook',dict(debit=[('claims',amount)], credit=[('deposits',amount)],text='Outside money endowment'))
+        self.send(('bank',self.housebank),'_autobook',dict(debit=[('reserves',amount)], credit=[('deposits',amount)],text='Outside money endowment'))
         self.accounts.book(debit=[('money holdings',amount)],credit=([('equity',amount)]),text='Outside money endowment')
         
     def take_loan(self,amount):
@@ -58,7 +58,7 @@ class SimpleHousehold(abce.Agent):
 class SimpleBank(abce.Agent):
     def init(self):
         self.accounts = AccountingSystem(residual_account_name='equity')
-        self.accounts.make_stock_account(['reserves','claims','deposits','wholesale refinancing'])
+        self.accounts.make_stock_account(['reserves','claims','deposits','refinancing'])
         self.accounts.make_flow_account(['interest income','interest expense'])
     
     def _autobook(self):
@@ -68,7 +68,7 @@ class SimpleBank(abce.Agent):
         self.accounts.print_profit_and_loss()
         self.accounts.make_end_of_period()
         self.accounts.print_balance_sheet()
-        self.log('total_assets_bank',self.accounts.get_total_assets())
+        self.log('total_assets',self.accounts.get_total_assets())
         
     def handle_transfers(self,num_banks,housebank_indices):
         intransfers = self.get_messages('Intransfer')
@@ -83,7 +83,7 @@ class SimpleBank(abce.Agent):
             if sender_housebank != self.id:
                 amount = intransfer.content['amount']
                 amounts_transfers[sender_housebank] += amount
-        
+
         for outtransfer in outtransfers:
             recipient = outtransfer.content['recipient']
             recipient_housebank = housebank_indices[recipient]
@@ -94,9 +94,10 @@ class SimpleBank(abce.Agent):
                 self.send(('household',recipient),'_autobook',dict(debit=[('money holdings',amount)],credit=[('income',amount)],text='Transfer'))
             else:
                 amounts_transfers[recipient_housebank] -= amount
-        
+
         # Compute net funding needs
         _,reserves = self.accounts['reserves'].get_balance()
+
         funding_need = -min(0,sum(amounts_transfers)+reserves)
         
         # >> could be in separate function after checking if funding needs can be met
@@ -115,9 +116,12 @@ class SimpleBank(abce.Agent):
             amount = -amounts_transfers[i]
             if amount > 0:
                 self.accounts.book(debit=[('deposits',amount)],credit=[('reserves',amount)],text='Client transfer')
-                self.send(('bank',recipient_housebank),'_autobook',dict(debit=[('deposits',amount)],credit=[('reserves',amount)],text='Client transfer'))
+                self.send(('bank',recipient_housebank),'_autobook',dict(debit=[('reserves',amount)],credit=[('deposits',amount)],text='Client transfer'))
 
         return funding_need
+    
+    def get_funding(self,funding_need):
+        self.accounts.book(debit=[('reserves',funding_needs[self.id])],credit=[('refinancing',funding_needs[self.id])])
     
     def give_loan(self):
         for loan_request in self.get_messages('loan_request'):
@@ -135,16 +139,20 @@ households = sim.build_agents(SimpleHousehold,'household',num_households,num_ban
 
 housebank_indices = list(households.return_housebank())
 households.get_outside_money(100)
+banks._autobook()
 
 for r in range(4):
+    sim.advance_round(r)
     households.take_loan(100)
     households.transfer_money(housebank_indices)
 #    recipients = random.randrange(num_households)
 #    amounts = [amount*int(random.random() < spending_probability) for amount in households.return_money_holdings()]
 #    households.transfer_money(amounts,recipients,housebank_indices)
     households.transfer_money(housebank_indices)
-    banks.handle_transfers(num_banks,housebank_indices)
-#    banks.give_loan()
+    funding_needs = list(banks.handle_transfers(num_banks,housebank_indices))
+    print(funding_needs)
+    banks.get_funding(funding_needs)
+    banks.give_loan()
     households._autobook()
     banks._autobook()
 
