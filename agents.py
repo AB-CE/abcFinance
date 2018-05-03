@@ -31,11 +31,12 @@ class SimpleHousehold(abce.Agent):
         self.accounts.print_balance_sheet()
         self.log('total_assets_household',self.accounts.get_total_assets())
     
-    def transfer_money(self,amounts,recipients,housebank_indices):
-        amount = amounts[self.id]
+    def transfer_money(self,housebank_indices):
+        recipient = random.randrange(len(housebank_indices))
+        recipient_housebank = housebank_indices[recipient]
+        _,amount = self.accounts['money holdings'].get_balance()
+        amount = round(random.random() * amount)
         if amount > 0:
-            recipient = recipients[self.id]
-            recipient_housebank = housebank_indices[recipient]
             self.send(('bank',self.housebank),'Outtransfer',{'amount':amount,'recipient':recipient})
             self.send(('bank',recipient_housebank),'Intransfer',{'amount':amount,'sender':self.id})
     
@@ -65,6 +66,7 @@ class SimpleBank(abce.Agent):
         intransfers = self.get_messages('Intransfer')
         outtransfers = self.get_messages('Outtransfer')
         
+        # First, compute net transfers to each other bank
         amounts_transfers = [0] * num_banks
         
         for intransfer in intransfers:
@@ -78,27 +80,35 @@ class SimpleBank(abce.Agent):
             recipient = outtransfer.content['recipient']
             recipient_housebank = housebank_indices[recipient]
             amount = outtransfer.content['amount']
+            # Directly book transfers between own clients
             if recipient_housebank == self.id:
                 self.send(outtransfer.sender,'_autobook',dict(debit=[('expenses',amount)],credit=[('money holdings',amount)],text='Transfer'))
                 self.send(('household',recipient),'_autobook',dict(debit=[('money holdings',amount)],credit=[('income',amount)],text='Transfer'))
             else:
                 amounts_transfers[recipient_housebank] -= amount
         
+        # Compute net funding needs
         _,reserves = self.accounts['reserves'].get_balance()
         funding_need = -min(0,sum(amounts_transfers)+reserves)
         
-        # could be in separate function after checking if funding needs can be met
+        # >> could be in separate function after checking if funding needs can be met
+        # Book transfers on clients' accounts
         for outtransfer in outtransfers:
             recipient = outtransfer.content['recipient']
             sender = outtransfer.sender
             recipient_housebank = housebank_indices[recipient]
             amount = outtransfer.content['amount']
             if recipient_housebank != self.id:
-                self.accounts.book(debit=[('deposits',amount)],credit=[('reserves',amount)],text='Client transfer')
-                self.send(('bank',recipient_housebank),'_autobook',dict(debit=[('deposits',amount)],credit=[('reserves',amount)],text='Client transfer'))
                 self.send(outtransfer.sender,'_autobook',dict(debit=[('expenses',amount)],credit=[('money holdings',amount)],text='Transfer'))
                 self.send(('household',recipient),'_autobook',dict(debit=[('money holdings',amount)],credit=[('income',amount)],text='Transfer'))
-                
+        
+        # Only book net transfers between banks (net settlement system)
+        for i in range(num_banks):
+            amount = -amounts_transfers[i]
+            if amount > 0:
+                self.accounts.book(debit=[('deposits',amount)],credit=[('reserves',amount)],text='Client transfer')
+                self.send(('bank',recipient_housebank),'_autobook',dict(debit=[('deposits',amount)],credit=[('reserves',amount)],text='Client transfer'))
+
         return funding_need
     
     def give_loan(self):
@@ -121,10 +131,11 @@ households.get_outside_money(100)
 for r in range(4):
     households.take_loan(100)
     households.transfer_money(housebank_indices)
-    recipients = random.randrange(num_households)
-    amounts = [amount*int(random.random() < spending_probability) for amount in households.return_money_holdings()]
-    households.transfer_money(amounts,recipients,housebank_indices)
-#    banks.handle_transfers(num_banks,housebank_indices)
+#    recipients = random.randrange(num_households)
+#    amounts = [amount*int(random.random() < spending_probability) for amount in households.return_money_holdings()]
+#    households.transfer_money(amounts,recipients,housebank_indices)
+    households.transfer_money(housebank_indices)
+    banks.handle_transfers(num_banks,housebank_indices)
 #    banks.give_loan()
     households._autobook()
     banks._autobook()
