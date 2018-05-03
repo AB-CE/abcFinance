@@ -30,6 +30,14 @@ class SimpleHousehold(abce.Agent):
         self.accounts.make_end_of_period()
         self.accounts.print_balance_sheet()
         self.log('total_assets_household',self.accounts.get_total_assets())
+        
+#    def transfer_money(self,amounts,recipients,housebank_indices):
+#        amount = amounts[self.id]
+#        if amount > 0:
+#            recipient = recipients[self.id]
+#            recipient_housebank = housebank_indices[recipient]
+#            self.send(('bank',self.housebank),'Outtransfer',{'amount':amount,'recipient':recipient})
+#            self.send(('bank',recipient_housebank),'Intransfer',{'amount':amount,'sender':self.id})
     
     def transfer_money(self,housebank_indices):
         recipient = random.randrange(len(housebank_indices))
