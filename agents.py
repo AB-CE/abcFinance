@@ -31,13 +31,13 @@ class SimpleHousehold(abce.Agent):
         self.accounts.print_balance_sheet()
         self.log('total_assets_household',self.accounts.get_total_assets())
     
-    def transfer_money(self,housebank_indices):
-        recipient = random.randrange(len(housebank_indices))
-        recipient_housebank = housebank_indices[recipient]
-        _,amount = self.accounts['money holdings'].get_balance()
-        amount = round(random.random() * amount)
-        self.send(('bank',self.housebank),'Outtransfer',{'amount':amount,'recipient':recipient})
-        self.send(('bank',recipient_housebank),'Intransfer',{'amount':amount,'sender':self.id})
+    def transfer_money(self,amounts,recipients,housebank_indices):
+        amount = amounts[self.id]
+        if amount > 0:
+            recipient = recipients[self.id]
+            recipient_housebank = housebank_indices[recipient]
+            self.send(('bank',self.housebank),'Outtransfer',{'amount':amount,'recipient':recipient})
+            self.send(('bank',recipient_housebank),'Intransfer',{'amount':amount,'sender':self.id})
     
     def get_outside_money(self,amount):
         self.send(('bank',self.housebank),'_autobook',dict(debit=[('claims',amount)], credit=[('deposits',amount)],text='Outside money endowment'))
@@ -121,14 +121,13 @@ households.get_outside_money(100)
 for r in range(4):
     households.take_loan(100)
     households.transfer_money(housebank_indices)
-#    recipients = random.randrange(num_households)
-#    recipient_housebanks = [housebank_indices[i] for i in recipients]
-#    amounts = [amount*int(random.random() < spending_probability) for amount in households.return_money_holdings()]
-#    households.transfer_money(amounts,recipients,recipient_housebanks)
-    banks.handle_transfers(num_banks,housebank_indices)
+    recipients = random.randrange(num_households)
+    amounts = [amount*int(random.random() < spending_probability) for amount in households.return_money_holdings()]
+    households.transfer_money(amounts,recipients,housebank_indices)
+#    banks.handle_transfers(num_banks,housebank_indices)
 #    banks.give_loan()
     households._autobook()
     banks._autobook()
 
-sim.graphs()
+#sim.graphs()
 
