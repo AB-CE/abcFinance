@@ -99,16 +99,27 @@ class AccountingSystem:
 
             accounts.book(debit=[('inventory',20)], credit=[('cash',20)], text="Purchase of equipment")
         """
-        assert sum([value for _, value in debit]) == \
-            sum([value for _, value in credit])
-
-        for account, value in debit:
-            self.accounts[account].debit.append(value)
-
-        for account, value in credit:
-            self.accounts[account].credit.append(value)
-
-        self.booking_history.append((debit, credit, text))
+        sum_debit = 0
+        sum_credit = 0
+        
+        for _,value in debit:
+            assert value >= 0
+            sum_debit += value
+        
+        for _,value in credit:
+            assert value >= 0
+            sum_credit += value
+        
+        assert sum_debit == sum_credit
+        
+        if sum_debit > 0:
+            for account, value in debit:
+                self.accounts[account].debit.append(value)
+    
+            for account, value in credit:
+                self.accounts[account].credit.append(value)
+    
+            self.booking_history.append((debit, credit, text))
 
     def make_end_of_period(self):
         """ Close flow accounts and credit/debit residual (equity) account """
