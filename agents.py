@@ -99,7 +99,11 @@ class SimpleBank(abce.Agent):
         _,reserves = self.accounts['reserves'].get_balance()
 
         funding_need = -min(0,sum(amounts_transfers)+reserves)
-        
+        self.accounts.book(debit=[('reserves',funding_needs[self.id])],credit=[('refinancing',funding_needs[self.id])])
+        side,_ = self.accounts['reserves'].get_balance()
+        if side == s.CREDIT:
+            a=1
+
         # >> could be in separate function after checking if funding needs can be met
         # Book transfers on clients' accounts
         for outtransfer in outtransfers:
@@ -120,9 +124,10 @@ class SimpleBank(abce.Agent):
 
         return funding_need
     
-    def get_funding(self,funding_need):
-        self.accounts.book(debit=[('reserves',funding_needs[self.id])],credit=[('refinancing',funding_needs[self.id])])
-    
+    def get_funding(self,funding_needs):
+        pass
+        #self.accounts.book(debit=[('reserves',funding_needs[self.id])],credit=[('refinancing',funding_needs[self.id])])
+
     def give_loan(self):
         for loan_request in self.get_messages('loan_request'):
             amount = loan_request.content['amount']
