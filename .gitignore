@@ -1,3 +1,4 @@
 result/
 parameter.db
 *.pyc
+*.csv
