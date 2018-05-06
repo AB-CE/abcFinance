@@ -99,16 +99,27 @@ class AccountingSystem:
 
             accounts.book(debit=[('inventory',20)], credit=[('cash',20)], text="Purchase of equipment")
         """
-        assert sum([value for _, value in debit]) == \
-            sum([value for _, value in credit])
-
-        for account, value in debit:
-            self.accounts[account].debit.append(value)
-
-        for account, value in credit:
-            self.accounts[account].credit.append(value)
-
-        self.booking_history.append((debit, credit, text))
+        sum_debit = 0
+        sum_credit = 0
+        
+        for _,value in debit:
+            assert value >= 0
+            sum_debit += value
+        
+        for _,value in credit:
+            assert value >= 0
+            sum_credit += value
+        
+        assert sum_debit == sum_credit
+        
+        if sum_debit > 0:
+            for account, value in debit:
+                self.accounts[account].debit.append(value)
+    
+            for account, value in credit:
+                self.accounts[account].credit.append(value)
+    
+            self.booking_history.append((debit, credit, text))
 
     def make_end_of_period(self):
         """ Close flow accounts and credit/debit residual (equity) account """
@@ -141,6 +152,7 @@ class AccountingSystem:
         """ Print a balance sheets """
         print('Asset accounts:')
         total_assets = 0
+        equity = 0
         for name, account in self.stock_accounts.items():
             side, balance = account.get_balance()
             if side == s.DEBIT:
@@ -225,6 +237,8 @@ class Account:
         creditsum = sum(self.credit)
         if debitsum > creditsum:
             return (s.DEBIT, debitsum - creditsum)
+        elif debitsum == creditsum:
+            return(s.BALANCED,0)
         else:
             return (s.CREDIT, creditsum - debitsum)
 
@@ -234,8 +248,9 @@ class Account:
 
 class s(Enum):
     """ Side which the balance of an account falls on """
-    DEBIT = 0
-    CREDIT = 1
+    DEBIT = 1
+    CREDIT = -1
+    BALANCED = 0
 
     def __repr__(self):
         return self.name
