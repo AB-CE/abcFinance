@@ -77,6 +77,7 @@ class SimpleBank(abce.Agent):
 
         # First, compute net transfers to each other bank
         amounts_transfers = [0] * num_banks
+        sum_transfers = 0
 
         for intransfer in intransfers:
             sender = intransfer.content['sender']
@@ -84,6 +85,7 @@ class SimpleBank(abce.Agent):
             if sender_housebank != self.id:
                 amount = intransfer.content['amount']
                 amounts_transfers[sender_housebank] += amount
+                sum_transfers += amount
 
         for outtransfer in outtransfers:
             recipient = outtransfer.content['recipient']
@@ -101,13 +103,12 @@ class SimpleBank(abce.Agent):
                     text='Transfer'))
             else:
                 amounts_transfers[recipient_housebank] -= amount
+                sum_transfers -= amount
 
         # Compute net funding needs
         _, reserves = self.accounts['reserves'].get_balance()
-
+        print(sum(amounts_transfers),sum_transfers,reserves)
         funding_need = - min(0, sum(amounts_transfers) + reserves)
-        self.accounts.book(debit=[('reserves', funding_needs[self.id])],
-                           credit=[('refinancing', funding_needs[self.id])])
 
         # >> could be in separate function after checking if funding needs can be met
         # Book transfers on clients' accounts
@@ -141,9 +142,8 @@ class SimpleBank(abce.Agent):
         return funding_need
 
     def get_funding(self, funding_needs):
-        pass
-        # self.accounts.book(debit=[('reserves', funding_needs[self.id])],
-        #                    credit=[('refinancing', funding_needs[self.id])])
+        self.accounts.book(debit=[('reserves', funding_needs[self.id])],
+                           credit=[('refinancing', funding_needs[self.id])])
 
     def give_loan(self):
         for loan_request in self.get_messages('loan_request'):
@@ -151,6 +151,7 @@ class SimpleBank(abce.Agent):
             self.accounts.book(debit=[('claims', amount)],
                                credit=[('deposits', amount)],
                                text='Loan')
+
             self.send(loan_request.sender, '_autobook', dict(
                 debit=[('money holdings', amount)],
                 credit=[('loan liabilities', amount)],
@@ -173,9 +174,6 @@ for r in range(4):
     sim.advance_round(r)
     households.take_loan(100)
     households.transfer_money(housebank_indices)
-#    recipients = random.randrange(num_households)
-#    amounts = [amount * int(random.random() < spending_probability) for amount in households.return_money_holdings()]
-#    households.transfer_money(amounts,recipients, housebank_indices)
     households.transfer_money(housebank_indices)
     funding_needs = list(banks.handle_transfers(num_banks, housebank_indices))
     print(funding_needs)
