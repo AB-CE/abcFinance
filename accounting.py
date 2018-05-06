@@ -152,6 +152,7 @@ class AccountingSystem:
         """ Print a balance sheets """
         print('Asset accounts:')
         total_assets = 0
+        equity = 0
         for name, account in self.stock_accounts.items():
             side, balance = account.get_balance()
             if side == s.DEBIT:
@@ -236,6 +237,8 @@ class Account:
         creditsum = sum(self.credit)
         if debitsum > creditsum:
             return (s.DEBIT, debitsum - creditsum)
+        elif debitsum == creditsum:
+            return(s.BALANCED,0)
         else:
             return (s.CREDIT, creditsum - debitsum)
 
@@ -245,8 +248,9 @@ class Account:
 
 class s(Enum):
     """ Side which the balance of an account falls on """
-    DEBIT = 0
-    CREDIT = 1
+    DEBIT = 1
+    CREDIT = -1
+    BALANCED = 0
 
     def __repr__(self):
         return self.name
