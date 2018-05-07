@@ -19,7 +19,6 @@ corporation.make_stock_account([
         'At-equity-accounted investments',
         'Held-to-maturity investments',
         'Available-for-sale financial assets',
-        'Receivables',
         # Current assets
         'Inventories',
         'Receivables',

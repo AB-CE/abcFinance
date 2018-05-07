@@ -32,7 +32,7 @@ accounts.book(debit=[('depreciation',2)],credit=[('inventory',2)],text="Deprecia
 accounts.print_profit_and_loss()
 
 print('Balance sheet after first period')
-accounts.make_end_of_period()
+accounts.book_end_of_period()
 accounts.print_balance_sheet()
 assert accounts['equity'].get_balance() == (s.CREDIT, 78)
 assert accounts['cash'].get_balance() == (s.DEBIT, 10),accounts['cash'].get_balance()
@@ -44,6 +44,6 @@ accounts.print_profit_and_loss()
 assert accounts['inventory'].get_balance() == (s.DEBIT, 8)
 
 print('Balance sheet after second period')
-accounts.make_end_of_period()
+accounts.book_end_of_period()
 accounts.print_balance_sheet()
 assert accounts['equity'].get_balance() == (s.CREDIT, 108)
