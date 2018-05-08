@@ -7,7 +7,6 @@ Created on Sun May  6 18:59:39 2018
 
 import abce
 from accountingsystem import AccountingSystem
-from account import Account, s
 
 
 class Agent(abce.Agent):
@@ -15,8 +14,8 @@ class Agent(abce.Agent):
         super().__init__(*param, **kwparam)
 
         if 'residual_account_name' in kwparam:
-            self.accounts = AccountingSystem(residual_account_name=
-                                             kwparam['residual_account_name'])
+            self.accounts = AccountingSystem(
+                residual_account_name=kwparam['residual_account_name'])
         else:
             self.accounts = AccountingSystem()
 

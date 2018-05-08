@@ -7,14 +7,14 @@ Created on Wed May  2 18:01:47 2018
 import abce
 import abcFinance
 import random
-from accountingsystem import AccountingSystem
+
 
 class Household(abcFinance.Agent):
     def init(self, config):
         self.config = config
         self.accounts.make_asset_accounts(['money holdings'])
         self.accounts.make_liability_accounts(['loan liabilities'])
-        self.accounts.make_flow_accounts(['income', 'expenses'])        
+        self.accounts.make_flow_accounts(['income', 'expenses'])
         self.housebank = self.id % config.num_banks
 
     def return_housebank(self):
@@ -142,11 +142,13 @@ class Bank(abcFinance.Agent):
                 credit=[('loan liabilities', amount)],
                 text='Loan'))
 
+
 class Config:
-    num_banks=2
-    num_households=3
-    spending_probability=0.3
+    num_banks = 2
+    num_households = 3
+    spending_probability = 0.3
     loan_size = 100
+
 
 sim = abce.Simulation(check_unchecked_msgs=True)
 
