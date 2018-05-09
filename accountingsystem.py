@@ -251,6 +251,9 @@ class AccountingSystem:
                     print(text, ":", value)
         print('--')
 
+    def get_balance(self, account):
+        return self.accounts[account].get_balance()
+
     def get_total_assets(self):
         """ Return total assets. """
         total_assets = 0
@@ -267,3 +270,5 @@ class AccountingSystem:
             debitsum += sum(account.debit)
             creditsum += sum(account.credit)
         return debitsum == creditsum
+
+
