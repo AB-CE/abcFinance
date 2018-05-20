@@ -5,12 +5,13 @@ Created on Wed May  2 15:23:48 2018
 @author: christoph
 """
 
-from accounting import AccountingSystem,Account,s
+from account import Account, s
+from accountingsystem import AccountingSystem
 
 corporation = AccountingSystem(residual_account_name='Retained earnings')
 bank = AccountingSystem(residual_account_name='Retained earnings')
 
-corporation.make_stock_account([
+corporation.make_stock_accounts([
         # Non-current assets
         'Property, plant and equipment',
         'Investment properties',
@@ -42,7 +43,7 @@ corporation.make_stock_account([
         'Share capital'
         ])
 
-corporation.make_flow_account([
+corporation.make_flow_accounts([
         # Continuing operations
         'Revenue',
         'Cost of goods sold',
@@ -63,7 +64,7 @@ corporation.make_flow_account([
         # Profit for the period
         ])
 
-bank.make_stock_account([
+bank.make_stock_accounts([
         # Assets
         'Cash and central bank reserves',
         'Loans and advances to banks',
@@ -98,7 +99,7 @@ bank.make_stock_account([
         'Share capital'
         ])
 
-bank.make_flow_account([
+bank.make_flow_accounts([
         'Interest income',
         'Interest expenses',
         'Fee and commission income',
