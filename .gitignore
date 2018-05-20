@@ -5,3 +5,6 @@ __pycache__/
 *.csv
 .ipynb_checkpoints
 .cpython-36.pyc
+.vs
+abcFinance.pyproj*
+env
