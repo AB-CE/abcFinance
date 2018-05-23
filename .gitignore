@@ -1,7 +1,7 @@
 result
 parameter.db
 *.pyc
-__pycache__
+__pycache__/
 *.csv
 .ipynb_checkpoints
 .cpython-36.pyc
