@@ -39,7 +39,7 @@ Example::
 
 """
 
-from account import Account, s
+from .account import Account, s
 
 
 class AccountingSystem:
