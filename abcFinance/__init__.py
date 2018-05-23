@@ -6,7 +6,8 @@ Created on Sun May  6 18:59:39 2018
 """
 
 import abce
-from accountingsystem import AccountingSystem
+from .accountingsystem import AccountingSystem
+from .account import Account, s
 
 
 class Agent(abce.Agent):
