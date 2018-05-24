@@ -30,7 +30,7 @@ class Contract:
 
         Optionally is_terminated should return whether the contract is terminated.
 
-        In order to use a contract with a book keeping system :method:`valuation` needs to return
+        In order to use a contract with a book keeping system :method:`get_valuation` needs to return
         the valuation
 
     """
@@ -69,7 +69,7 @@ class Contract:
 
         raise NotImplementedError
 
-    def valuation(self, party, time, *_, **__):
+    def get_valuation(self, party, time, *_, **__):
         """ returns a valuation of the contract.
         Arguments:
             party, the party for whom the valuation is made
@@ -90,5 +90,5 @@ class Contract:
         """
         raise NotImplementedError
 
-    def last_valuation(self):
+    def get_last_valuation(self):
         return self._last_valuation
