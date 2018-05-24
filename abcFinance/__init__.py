@@ -14,11 +14,8 @@ class Agent(abce.Agent):
     def __init__(self, *param, **kwparam):
         super().__init__(*param, **kwparam)
 
-        if 'residual_account_name' in kwparam:
-            self.accounts = Ledger(
-                residual_account_name=kwparam['residual_account_name'])
-        else:
-            self.accounts = Ledger()
+        self.accounts = Ledger(
+            residual_account_name=kwparam.get('residual_account_name', 'equity'))
 
     def __getattr__(self, attribute):
         if attribute in ['book_end_of_period', 'book', 'make_stock_accounts', 'make_flow_accounts',
