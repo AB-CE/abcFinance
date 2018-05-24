@@ -1,4 +1,4 @@
-""" abcFinance is an implementation of an double entry book keeping system
+""" abcFinance is an implementation of a double entry book keeping system
 
 Initialize the accounting system with, the name of the residual_account::
 
@@ -146,10 +146,10 @@ class AccountingSystem:
         assert sum_debit == sum_credit
 
         for account, value in debit:
-            self.accounts[account].debit.append(value)
+            self.accounts[account].add_debit(value)
 
         for account, value in credit:
-            self.accounts[account].credit.append(value)
+            self.accounts[account].add_credit(value)
 
         booked_accounts = set(debit).union(credit)
         booked_asset_accounts = booked_accounts.intersection(self.asset_accounts)
@@ -267,8 +267,8 @@ class AccountingSystem:
         debitsum = 0
         creditsum = 0
         for account in self.accounts.values():
-            debitsum += sum(account.debit)
-            creditsum += sum(account.credit)
+            debitsum += account.debit
+            creditsum += account.credit
         return debitsum == creditsum
 
 

@@ -17,15 +17,16 @@ class s(Enum):
     def __repr__(self):
         return self.name
 
+
 class Account:
     """ An account has two lists of debit and credit bookings """
     def __init__(self):
-        self.debit = []
-        self.credit = []
+        self.debit = 0
+        self.credit = 0
 
     def get_balance(self):
-        debitsum = sum(self.debit)
-        creditsum = sum(self.credit)
+        debitsum = self.debit
+        creditsum = self.credit
         if debitsum > creditsum:
             return (s.DEBIT, debitsum - creditsum)
         elif debitsum == creditsum:
@@ -33,6 +34,28 @@ class Account:
         else:
             return (s.CREDIT, creditsum - debitsum)
 
+    def add_debit(self, value):
+        self.debit += value
+
+    def add_credit(self, value):
+        self.credit += value
+
     def print_balance(self):
         print('debit', self.debit)
         print('credit', self.credit)
+
+
+class AccountWithHistory(Account):
+    """Account with additional logging of debit/credit history"""
+    def __init__(self):
+        super().__init__()
+        self.debit_history = []
+        self.credit_history = []
+
+    def add_debit(self, value):
+        self.debit += value
+        self.debit_history.append(value)
+
+    def add_credit(self, value):
+        self.credit += value
+        self.credit_history.append(value)
