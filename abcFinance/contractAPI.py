@@ -28,14 +28,14 @@ class Contract:
         gives the next action given the current time and relevant state. Further it must implement
         :method:`action_executed`, which is lets the contract know that an action has been is executed.
 
-        Optionally is_terminanted should return whether the contract is terminated.
+        Optionally is_terminated should return whether the contract is terminated.
 
         In order to use a contract with a book keeping system :method:`valuation` needs to return
         the valuation
 
     """
     def __init__(self, issuing_party, *_, **__):
-        self._last_valutation = None
+        self._last_valuation = None
         self.issuing_party = issuing_party
         self.counter_party = None
 
@@ -78,7 +78,7 @@ class Contract:
         """
         raise NotImplementedError
 
-    def is_terminanted(self):
+    def is_terminated(self):
         """ Whether the contract is terminated.
 
         Example::
@@ -91,4 +91,4 @@ class Contract:
         raise NotImplementedError
 
     def last_valuation(self):
-        return self._last_valutation
+        return self._last_valuation
