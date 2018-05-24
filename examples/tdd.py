@@ -2,9 +2,9 @@
 
 
 """
-from abcFinance import AccountingSystem,Account,s
+from abcFinance import Ledger, Account, s
 
-accounts = AccountingSystem('equity')
+accounts = Ledger('equity')
 
 accounts.make_stock_accounts(['cash', 'claims', 'inventory'])
 accounts.make_flow_accounts(['expenditure', 'revenue', 'cost of goods sold', 'depreciation'])

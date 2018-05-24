@@ -8,10 +8,10 @@ Created on Mon Apr 30 18:29:14 2018
 """ ---------------------------------------------------------------------------
 Set up the system
 """
-from abcFinance import AccountingSystem,Account,s
+from abcFinance import Ledger, Account, s
 
-bank = AccountingSystem(residual_account_name="equity")
-household = AccountingSystem(residual_account_name="equity")
+bank = Ledger(residual_account_name="equity")
+household = Ledger(residual_account_name="equity")
 
 bank.make_stock_accounts(['reserves','claims','security holdings','deposits','wholesale refinancing'])
 household.make_stock_accounts(['money holdings','loan liabilities'])

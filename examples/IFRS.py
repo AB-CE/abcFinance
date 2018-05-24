@@ -5,10 +5,10 @@ Created on Wed May  2 15:23:48 2018
 @author: christoph
 """
 
-from abcFinance import AccountingSystem,Account,s
+from abcFinance import Ledger, Account, s
 
-corporation = AccountingSystem(residual_account_name='Retained earnings')
-bank = AccountingSystem(residual_account_name='Retained earnings')
+corporation = Ledger(residual_account_name='Retained earnings')
+bank = Ledger(residual_account_name='Retained earnings')
 
 corporation.make_stock_accounts([
         # Non-current assets

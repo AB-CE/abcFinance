@@ -2,7 +2,7 @@
 
 Initialize the accounting system with, the name of the residual_account::
 
-    accounts = AccountingSystem(residual_account_name='equity')
+    accounts = Ledger(residual_account_name='equity')
 
 Create stock and flow account:
 
@@ -42,7 +42,7 @@ Example::
 from .account import Account, s
 
 
-class AccountingSystem:
+class Ledger:
     """ The main class to be initialized """
     def __init__(self, residual_account_name='equity'):
         self.stock_accounts = {}
