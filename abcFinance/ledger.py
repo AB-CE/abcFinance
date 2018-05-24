@@ -18,7 +18,7 @@ an account and a value::
 
 get balance gives you the balance of an account:
 
-    assert accounts['cash'].get_balance() == (s.DEBIT, 50)
+    assert accounts['cash'].get_balance() == (AccountSide.DEBIT, 50)
 
 Example::
 
@@ -34,12 +34,12 @@ Example::
 
     accounts.print_balance_sheet()
 
-    assert accounts['equity'].get_balance() == (s.CREDIT, 80)
+    assert accounts['equity'].get_balance() == (AccountSide.CREDIT, 80)
 
 
 """
 
-from .account import Account, s
+from .account import Account, AccountSide
 
 
 class Ledger:
@@ -157,11 +157,11 @@ class Ledger:
 
         for account in booked_asset_accounts:
             side, _ = account.get_balance()
-            assert side == s.DEBIT
+            assert side == AccountSide.DEBIT
 
         for account in booked_liability_accounts:
             side, _ = account.get_balance()
-            assert side == s.CREDIT
+            assert side == AccountSide.CREDIT
 
         self.booking_history.append((debit, credit, text))
 
@@ -173,7 +173,7 @@ class Ledger:
         for name, account in self.flow_accounts.items():
             side, balance = account.get_balance()
             if balance > 0:
-                if side == s.DEBIT:
+                if side == AccountSide.DEBIT:
                     profit -= balance
                     credit_accounts.append((name, balance))
                 else:
@@ -198,7 +198,7 @@ class Ledger:
         equity = 0
         for name, account in self.stock_accounts.items():
             side, balance = account.get_balance()
-            if side == s.DEBIT or (side == s.BALANCED and name in self.asset_accounts):
+            if side == AccountSide.DEBIT or (side == AccountSide.BALANCED and name in self.asset_accounts):
                 if name == self.residual_account_name:
                     equity = -balance
                 else:
@@ -208,7 +208,7 @@ class Ledger:
         print('Liability accounts:')
         for name, account in self.stock_accounts.items():
             side, balance = account.get_balance()
-            if side == s.CREDIT  or (side == s.BALANCED and name in self.liability_accounts):
+            if side == AccountSide.CREDIT  or (side == AccountSide.BALANCED and name in self.liability_accounts):
                 if name == self.residual_account_name:
                     equity = balance
                 else:
@@ -225,7 +225,7 @@ class Ledger:
         for name, account in self.flow_accounts.items():
             side, balance = account.get_balance()
             if balance != 0 or show_empty_accounts:
-                if side == s.DEBIT:
+                if side == AccountSide.DEBIT:
                     print("  ", name, ":", -balance)
                     profit -= balance
                 else:
@@ -259,7 +259,7 @@ class Ledger:
         total_assets = 0
         for account in self.stock_accounts.values():
             side, balance = account.get_balance()
-            if side == s.DEBIT:
+            if side == AccountSide.DEBIT:
                 total_assets += balance
         return total_assets
 

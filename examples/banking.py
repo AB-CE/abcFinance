@@ -8,7 +8,7 @@ Created on Mon Apr 30 18:29:14 2018
 """ ---------------------------------------------------------------------------
 Set up the system
 """
-from abcFinance import Ledger, Account, s
+from abcFinance import Ledger, Account, AccountSide
 
 bank = Ledger(residual_account_name="equity")
 household = Ledger(residual_account_name="equity")
