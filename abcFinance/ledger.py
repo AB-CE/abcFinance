@@ -135,21 +135,17 @@ class Ledger:
         sum_debit = 0
         sum_credit = 0
 
-        for _, value in debit:
+        for account, value in debit:
             assert value >= 0
+            self.accounts[account].add_debit(value)
             sum_debit += value
 
-        for _, value in credit:
+        for account, value in credit:
             assert value >= 0
+            self.accounts[account].add_credit(value)
             sum_credit += value
 
         assert sum_debit == sum_credit
-
-        for account, value in debit:
-            self.accounts[account].add_debit(value)
-
-        for account, value in credit:
-            self.accounts[account].add_credit(value)
 
         booked_accounts = set(debit).union(credit)
         booked_asset_accounts = booked_accounts.intersection(self.asset_accounts)
