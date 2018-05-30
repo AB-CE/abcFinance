@@ -135,33 +135,29 @@ class Ledger:
         sum_debit = 0
         sum_credit = 0
 
-        for _, value in debit:
+        for account, value in debit:
             assert value >= 0
+            self.accounts[account].add_debit(value)
+            if account in self.asset_accounts:
+                side, _ = account.get_balance()
+                assert side == AccountSide.DEBIT
+            elif account in self.liability_accounts:
+                side, _ = account.get_balance()
+                assert side == AccountSide.CREDIT
             sum_debit += value
 
-        for _, value in credit:
+        for account, value in credit:
             assert value >= 0
+            self.accounts[account].add_credit(value)
+            if account in self.asset_accounts:
+                side, _ = account.get_balance()
+                assert side == AccountSide.DEBIT
+            elif account in self.liability_accounts:
+                side, _ = account.get_balance()
+                assert side == AccountSide.CREDIT
             sum_credit += value
 
         assert sum_debit == sum_credit
-
-        for account, value in debit:
-            self.accounts[account].add_debit(value)
-
-        for account, value in credit:
-            self.accounts[account].add_credit(value)
-
-        booked_accounts = set(debit).union(credit)
-        booked_asset_accounts = booked_accounts.intersection(self.asset_accounts)
-        booked_liability_accounts = booked_accounts.intersection(self.liability_accounts)
-
-        for account in booked_asset_accounts:
-            side, _ = account.get_balance()
-            assert side == AccountSide.DEBIT
-
-        for account in booked_liability_accounts:
-            side, _ = account.get_balance()
-            assert side == AccountSide.CREDIT
 
         self.booking_history.append((debit, credit, text))
 
