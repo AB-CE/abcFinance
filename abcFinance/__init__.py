@@ -6,19 +6,16 @@ Created on Sun May  6 18:59:39 2018
 """
 
 import abce
-from .accountingsystem import AccountingSystem
-from .account import Account, s
+from .ledger import Ledger
+from .account import Account, AccountSide
 
 
 class Agent(abce.Agent):
     def __init__(self, *param, **kwparam):
         super().__init__(*param, **kwparam)
 
-        if 'residual_account_name' in kwparam:
-            self.accounts = AccountingSystem(
-                residual_account_name=kwparam['residual_account_name'])
-        else:
-            self.accounts = AccountingSystem()
+        self.accounts = Ledger(
+            residual_account_name=kwparam.get('residual_account_name', 'equity'))
 
     def __getattr__(self, attribute):
         if attribute in ['book_end_of_period', 'book', 'make_stock_accounts', 'make_flow_accounts',
