@@ -11,7 +11,7 @@ from accountingsystem import AccountingSystem
 corporation = AccountingSystem(residual_account_name='Retained earnings')
 bank = AccountingSystem(residual_account_name='Retained earnings')
 
-corporation.make_stock_accounts([
+corporation.make_asset_accounts([
         # Non-current assets
         'Property, plant and equipment',
         'Investment properties',
@@ -27,6 +27,9 @@ corporation.make_stock_accounts([
         'Financial assets at fair value through profit or loss',
         'Cash and cash equivalents',
         'Assets classified as held for sale',
+        ])
+
+corporation.make_liability_accounts([
         # Non-current liabilities
         'Borrowings',
         'Deferred tax liabilities',
@@ -36,7 +39,6 @@ corporation.make_stock_accounts([
         'Payables',
         'Current tax liabilities',
         'Derivative financial instruments liabilities',
-        'Provisions',
         'Deferred revenue',
         'Liabilities associated with assets classified as held for sale',
         # Equity
@@ -64,7 +66,7 @@ corporation.make_flow_accounts([
         # Profit for the period
         ])
 
-bank.make_stock_accounts([
+bank.make_asset_accounts([
         # Assets
         'Cash and central bank reserves',
         'Loans and advances to banks',
@@ -81,6 +83,9 @@ bank.make_stock_accounts([
         'Goodwill and other intangible assets',
         'Deferred tax assets',
         'Other assets',
+        ])
+
+bank.make_liability_accounts([
         # Liabilities
         'Deposits from customers',
         'Deposits from banks',
@@ -116,7 +121,7 @@ bank.make_flow_accounts([
         'Administrative expenses',
         'Impairment of goodwill',
         'Depreciation and amortisation',
-        'Provisions',
+        'New provisions',
         'Impairments',
         # = Profit before taxes
         'Income tax expense'

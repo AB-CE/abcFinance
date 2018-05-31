@@ -8,3 +8,4 @@ __pycache__
 .vs
 abcFinance.pyproj*
 env
+*.sln

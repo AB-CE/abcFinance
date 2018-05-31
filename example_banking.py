@@ -8,15 +8,15 @@ Created on Mon Apr 30 18:29:14 2018
 """ ---------------------------------------------------------------------------
 Set up the system
 """
-from accounting import AccountingSystem,Account,s
+from accountingsystem import AccountingSystem
 
 bank = AccountingSystem(residual_account_name="equity")
 household = AccountingSystem(residual_account_name="equity")
 
-bank.make_stock_account(['reserves','claims','security holdings','deposits','wholesale refinancing'])
-household.make_stock_account(['money holdings','loan liabilities'])
-bank.make_flow_account(['interest income','interest expense'])
-household.make_flow_account(['income','expenses'])
+bank.make_stock_accounts(['reserves','claims','security holdings','deposits','wholesale refinancing'])
+household.make_stock_accounts(['money holdings','loan liabilities'])
+bank.make_flow_accounts(['interest income','interest expense'])
+household.make_flow_accounts(['income','expenses'])
 
 """ ---------------------------------------------------------------------------
 Initialize balance sheets (outside money endowments)

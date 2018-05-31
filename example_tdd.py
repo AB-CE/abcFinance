@@ -9,8 +9,8 @@ from accountingsystem import AccountingSystem
 
 accounts = AccountingSystem('equity')
 
-accounts.make_stock_account(['cash', 'claims', 'inventory'])
-accounts.make_flow_account(['expenditure', 'revenue', 'cost of goods sold', 'depreciation'])
+accounts.make_stock_accounts(['cash', 'claims', 'inventory'])
+accounts.make_flow_accounts(['expenditure', 'revenue', 'cost of goods sold', 'depreciation'])
 
 accounts.book(
     debit=[('cash', 50), ('claims', 50)],
