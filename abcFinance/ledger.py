@@ -1,8 +1,8 @@
-""" abcFinance is an implementation of an double entry book keeping system
+""" abcFinance is an implementation of a double entry book keeping system
 
 Initialize the accounting system with, the name of the residual_account::
 
-    accounts = AccountingSystem(residual_account_name='equity')
+    accounts = Ledger(residual_account_name='equity')
 
 Create stock and flow account:
 
@@ -18,7 +18,7 @@ an account and a value::
 
 get balance gives you the balance of an account:
 
-    assert accounts['cash'].get_balance() == (s.DEBIT, 50)
+    assert accounts['cash'].get_balance() == (AccountSide.DEBIT, 50)
 
 Example::
 
@@ -34,15 +34,15 @@ Example::
 
     accounts.print_balance_sheet()
 
-    assert accounts['equity'].get_balance() == (s.CREDIT, 80)
+    assert accounts['equity'].get_balance() == (AccountSide.CREDIT, 80)
 
 
 """
 
-from account import Account, s
+from .account import Account, AccountSide
 
 
-class AccountingSystem:
+class Ledger:
     """ The main class to be initialized """
     def __init__(self, residual_account_name='equity'):
         self.stock_accounts = {}
@@ -135,33 +135,29 @@ class AccountingSystem:
         sum_debit = 0
         sum_credit = 0
 
-        for _, value in debit:
+        for account, value in debit:
             assert value >= 0
+            self.accounts[account].add_debit(value)
+            if account in self.asset_accounts:
+                side, _ = account.get_balance()
+                assert side == AccountSide.DEBIT
+            elif account in self.liability_accounts:
+                side, _ = account.get_balance()
+                assert side == AccountSide.CREDIT
             sum_debit += value
 
-        for _, value in credit:
+        for account, value in credit:
             assert value >= 0
+            self.accounts[account].add_credit(value)
+            if account in self.asset_accounts:
+                side, _ = account.get_balance()
+                assert side == AccountSide.DEBIT
+            elif account in self.liability_accounts:
+                side, _ = account.get_balance()
+                assert side == AccountSide.CREDIT
             sum_credit += value
 
         assert sum_debit == sum_credit
-
-        for account, value in debit:
-            self.accounts[account].debit.append(value)
-
-        for account, value in credit:
-            self.accounts[account].credit.append(value)
-
-        booked_accounts = set(debit).union(credit)
-        booked_asset_accounts = booked_accounts.intersection(self.asset_accounts)
-        booked_liability_accounts = booked_accounts.intersection(self.liability_accounts)
-
-        for account in booked_asset_accounts:
-            side, _ = account.get_balance()
-            assert side == s.DEBIT
-
-        for account in booked_liability_accounts:
-            side, _ = account.get_balance()
-            assert side == s.CREDIT
 
         self.booking_history.append((debit, credit, text))
 
@@ -173,7 +169,7 @@ class AccountingSystem:
         for name, account in self.flow_accounts.items():
             side, balance = account.get_balance()
             if balance > 0:
-                if side == s.DEBIT:
+                if side == AccountSide.DEBIT:
                     profit -= balance
                     credit_accounts.append((name, balance))
                 else:
@@ -198,7 +194,7 @@ class AccountingSystem:
         equity = 0
         for name, account in self.stock_accounts.items():
             side, balance = account.get_balance()
-            if side == s.DEBIT or (side == s.BALANCED and name in self.asset_accounts):
+            if side == AccountSide.DEBIT or (side == AccountSide.BALANCED and name in self.asset_accounts):
                 if name == self.residual_account_name:
                     equity = -balance
                 else:
@@ -208,7 +204,7 @@ class AccountingSystem:
         print('Liability accounts:')
         for name, account in self.stock_accounts.items():
             side, balance = account.get_balance()
-            if side == s.CREDIT  or (side == s.BALANCED and name in self.liability_accounts):
+            if side == AccountSide.CREDIT  or (side == AccountSide.BALANCED and name in self.liability_accounts):
                 if name == self.residual_account_name:
                     equity = balance
                 else:
@@ -225,7 +221,7 @@ class AccountingSystem:
         for name, account in self.flow_accounts.items():
             side, balance = account.get_balance()
             if balance != 0 or show_empty_accounts:
-                if side == s.DEBIT:
+                if side == AccountSide.DEBIT:
                     print("  ", name, ":", -balance)
                     profit -= balance
                 else:
@@ -259,7 +255,7 @@ class AccountingSystem:
         total_assets = 0
         for account in self.stock_accounts.values():
             side, balance = account.get_balance()
-            if side == s.DEBIT:
+            if side == AccountSide.DEBIT:
                 total_assets += balance
         return total_assets
 
@@ -267,8 +263,8 @@ class AccountingSystem:
         debitsum = 0
         creditsum = 0
         for account in self.accounts.values():
-            debitsum += sum(account.debit)
-            creditsum += sum(account.credit)
+            debitsum += account.debit
+            creditsum += account.credit
         return debitsum == creditsum
 
 

@@ -5,11 +5,12 @@ python:
 
 install:
   - pip install abcEconomics
+  - python setup.py install
 
 script:
 
-  - python examples/example_banking.py
-  - python examples/example_tdd.py
+  - python examples/banking.py
+  - python examples/tdd.py
 
 
 
