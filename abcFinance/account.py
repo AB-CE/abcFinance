@@ -33,12 +33,14 @@ class Account:
             return(AccountSide.BALANCED, 0)
         else:
             return (AccountSide.CREDIT, creditsum - debitsum)
+    
+    def __setattr__(self, name, value):
+        if name == 'debit' and hasattr(self,'debit'):
+            assert value >= self.debit
+        if name == 'credit' and hasattr(self,'credit'):
+            assert value >= self.credit
 
-    def add_debit(self, value):
-        self.debit += value
-
-    def add_credit(self, value):
-        self.credit += value
+        return super().__setattr__(name, value) 
 
     def print_balance(self):
         print('debit', self.debit)
