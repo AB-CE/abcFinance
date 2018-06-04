@@ -149,7 +149,6 @@ class Config:
     spending_probability = 0.3
     loan_size = 100
 
-
 sim = abce.Simulation(check_unchecked_msgs=True)
 
 banks = sim.build_agents(Bank, 'bank', Config.num_banks, config=Config)
