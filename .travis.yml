@@ -4,13 +4,11 @@ python:
   - "3.5"
 
 install:
-  - pip install abcEconomics
+  - pip install coveralls abcEconomics
   - python setup.py install
 
 script:
+  - nosetests --with-coverage --cover-package=abcFinance examples/tdd.py examples/banking.py
 
-  - python examples/banking.py
-  - python examples/tdd.py
-
-
-
+after_success:
+  - coveralls
