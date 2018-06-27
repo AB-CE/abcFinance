@@ -6,7 +6,7 @@ Created on Mon May  7 14:26:31 2018
 """
 
 from enum import Enum
-
+from math import isclose
 
 class AccountSide(Enum):
     """ Side which the balance of an account falls on """
@@ -20,6 +20,7 @@ class AccountSide(Enum):
 
 class Account:
     """ An account has two lists of debit and credit bookings """
+
     def __init__(self):
         self.debit = 0
         self.credit = 0
@@ -27,10 +28,10 @@ class Account:
     def get_balance(self):
         debitsum = self.debit
         creditsum = self.credit
-        if debitsum > creditsum:
-            return (AccountSide.DEBIT, debitsum - creditsum)
-        elif debitsum == creditsum:
+        if isclose(debitsum, creditsum):
             return(AccountSide.BALANCED, 0)
+        elif debitsum > creditsum:
+            return (AccountSide.DEBIT, debitsum - creditsum)
         else:
             return (AccountSide.CREDIT, creditsum - debitsum)
 
