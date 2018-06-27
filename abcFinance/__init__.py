@@ -26,4 +26,7 @@ class Agent(abce.Agent):
             raise AttributeError("%s not in agent %s" % (attribute, self.name))
 
     def _autobook(self, msg):
-        self.accounts.book(**msg.content)
+        self.accounts.book(**msg)
+
+
+print("HERE")
