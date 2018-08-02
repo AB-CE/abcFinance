@@ -210,7 +210,7 @@ class Ledger:
                 else:
                     if balance != 0 or show_empty_accounts:
                         print("  ", name, ":", balance)
-        print('Equity: ', equity)
+        print(self.residual_account_name + ": ", equity)
         print('Total Assets: ', total_assets)
         print('--')
 
