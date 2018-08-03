@@ -64,50 +64,74 @@ class Ledger:
 
         Args:
             names, list of names for the accounts
+
+        Return:
+            a list of the new accounts
         """
+        new_accounts = []
         for name in names:
             assert name not in self.accounts
             account = Account()
             self.stock_accounts[name] = account
             self.accounts[name] = account
+            new_accounts.append(account)
+        return new_accounts
 
     def make_asset_accounts(self, names):
         """ Create stock accounts.
 
         Args:
             names, list of names for the accounts
+
+        Return:
+            a list of the new accounts
         """
+        new_accounts = []
         for name in names:
             assert name not in self.accounts
             account = Account()
             self.asset_accounts[name] = account
             self.stock_accounts[name] = account
             self.accounts[name] = account
+            new_accounts.append(account)
+        return new_accounts
 
     def make_liability_accounts(self, names):
         """ Create stock accounts.
 
         Args:
             names, list of names for the accounts
+
+        Return:
+            a list of the new accounts
         """
+        new_accounts = []
         for name in names:
             assert name not in self.accounts
             account = Account()
             self.liability_accounts[name] = account
             self.stock_accounts[name] = account
             self.accounts[name] = account
+            new_accounts.append(account)
+        return new_accounts
 
     def make_flow_accounts(self, names):
         """ Create flow accounts.
 
         Args:
             names, list of names for the accounts
+
+        Return:
+            a list of the new accounts
         """
+        new_accounts = []
         for name in names:
             assert name not in self.accounts
             account = Account()
             self.flow_accounts[name] = account
             self.accounts[name] = account
+            new_accounts.append(account)
+        return new_accounts
 
     def _make_residual_account(self, name):
         assert name not in self.accounts
