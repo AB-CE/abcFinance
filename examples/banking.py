@@ -81,3 +81,4 @@ def test_banking():
     bank.print_balance_sheet()
     print('Household balance sheet after dividend payment')
     household.print_balance_sheet()
+test_banking()
