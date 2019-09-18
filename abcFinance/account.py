@@ -20,6 +20,7 @@ class AccountSide(Enum):
 
 class Account:
     """ An account has two lists of debit and credit bookings """
+
     def __init__(self):
         self.debit = 0
         self.credit = 0
@@ -33,14 +34,14 @@ class Account:
             return(AccountSide.BALANCED, 0)
         else:
             return (AccountSide.CREDIT, creditsum - debitsum)
-    
+
     def __setattr__(self, name, value):
-        if name == 'debit' and hasattr(self,'debit'):
+        if name == 'debit' and hasattr(self, 'debit'):
             assert value >= self.debit
-        if name == 'credit' and hasattr(self,'credit'):
+        if name == 'credit' and hasattr(self, 'credit'):
             assert value >= self.credit
 
-        return super().__setattr__(name, value) 
+        return super().__setattr__(name, value)
 
     def print_balance(self):
         print('debit', self.debit)
@@ -49,6 +50,7 @@ class Account:
 
 class AccountWithHistory(Account):
     """Account with additional logging of debit/credit history"""
+
     def __init__(self):
         super().__init__()
         self.debit_history = []
