@@ -293,7 +293,7 @@ class Ledger:
             height = total_assets
         plot = Scene(height=height+40, width=width)
         plot.add(Text(origin=(box_width,0), text=title, size=24, align_vertical="hanging"))
-        left_corner = (0, 35)
+        left_corner = (5, 35)
         for name, balance in asset_accounts:
             if name=="Neg. Equity":
                 plot.add(Textbox(left_corner, int(height*(balance/total_assets)), box_width,
@@ -302,20 +302,20 @@ class Ledger:
             else:
                 plot.add(Textbox(left_corner, int(height*(balance/total_assets)), box_width,
                                 name + " " + str(int(balance)),
-                                color = (204, 255, 204)))
-            left_corner = (0, left_corner[1] + int(height*(balance/total_assets)))
+                                color = (153, 204, 255)))
+            left_corner = (5, left_corner[1] + int(height*(balance/total_assets)))
 
-        left_corner = (box_width, 35)
+        left_corner = (box_width+5, 35)
         for name, balance in liability_accounts:
             if name==self.residual_account_name:
                 plot.add(Textbox(left_corner, int(height*(balance/total_assets)), box_width,
                                 name + " " + str(int(balance)),
-                                color = (255, 204, 204)))
+                                color = (204, 255, 204)))
             else:
                 plot.add(Textbox(left_corner, int(height*(balance/total_assets)), box_width,
                                 name + " " + str(int(balance)),
-                                color = (153, 204, 255)))
-            left_corner = (box_width, left_corner[1] + int(height*(balance/total_assets)))
+                                color = (255, 204, 204)))
+            left_corner = (box_width+5, left_corner[1] + int(height*(balance/total_assets)))
 
         if write_file:
             plot.write_svg()
