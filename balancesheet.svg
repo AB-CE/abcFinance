@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<svg height="140" width="400" >
+ <g style="fill-opacity:1.0; stroke:black;
+  stroke-width:1;">
+  <text x="195" y="0" font-size="24" text-anchor="middle" dominant-baseline="hanging">
+   Balance Sheet
+  </text>
+  <rect x="0" y="35" height="50"
+    width="195" style="fill:rgb(255, 255, 255);" />
+  <text x="97" y="60" font-size="18" text-anchor="middle" dominant-baseline="middle">
+   CBDC 50
+  </text>
+  <rect x="0" y="85" height="50"
+    width="195" style="fill:rgb(255, 255, 255);" />
+  <text x="97" y="110" font-size="18" text-anchor="middle" dominant-baseline="middle">
+   Loans 50
+  </text>
+  <rect x="195" y="35" height="100"
+    width="195" style="fill:rgb(255, 255, 255);" />
+  <text x="292" y="85" font-size="18" text-anchor="middle" dominant-baseline="middle">
+   Equity 100
+  </text>
+ </g>
+</svg>
