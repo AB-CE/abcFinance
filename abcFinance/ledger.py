@@ -271,7 +271,7 @@ class Ledger:
             creditsum += account.credit
         return debitsum == creditsum
 
-    def draw_balance_sheet(self, title="Balance Sheet", height = None, width=400, write_file=False):
+    def draw_balance_sheet(self, title="Balance Sheet", height = None, width=350, write_file=False):
         total_assets = 0
         asset_accounts = list()
         liability_accounts = list()
@@ -288,12 +288,12 @@ class Ledger:
                 if balance != 0:
                     liability_accounts.append((name, balance))
 
-        box_width = (width-10)//2
+        box_width = width//2
         if height is None:
-            height = total_assets
-        plot = Scene(height=height+40, width=width)
-        plot.add(Text(origin=(box_width,0), text=title, size=24, align_vertical="hanging"))
-        left_corner = (5, 35)
+            height = int(total_assets*0.8)
+        plot = Scene(height=height+30, width=width+10)
+        plot.add(Text(origin=(box_width,0), text=title, size=19, align_vertical="hanging"))
+        left_corner = (5, 25)
         for name, balance in asset_accounts:
             if name=="Neg. Equity":
                 plot.add(Textbox(left_corner, int(height*(balance/total_assets)), box_width,
@@ -305,7 +305,7 @@ class Ledger:
                                 color = (153, 204, 255)))
             left_corner = (5, left_corner[1] + int(height*(balance/total_assets)))
 
-        left_corner = (box_width+5, 35)
+        left_corner = (box_width+5, 25)
         for name, balance in liability_accounts:
             if name==self.residual_account_name:
                 plot.add(Textbox(left_corner, int(height*(balance/total_assets)), box_width,

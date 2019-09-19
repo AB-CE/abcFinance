@@ -75,7 +75,7 @@ class Text:
 
 
 class Textbox:
-    def __init__(self, origin, height, width, text, color=(255, 255, 255), text_size=18):
+    def __init__(self, origin, height, width, text, color=(255, 255, 255), text_size=16):
         self.Outer = Rectangle(origin, height, width, color)
         self.Inner = Text((origin[0]+width//2, origin[1]+height//2),
                           text, text_size, align_horizontal="middle", align_vertical="middle")
