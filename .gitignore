@@ -17,3 +17,5 @@ venv
 abcFinance.egg-info
 dist
 build
+.coverage
+.noseids
