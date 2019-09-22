@@ -8,7 +8,7 @@ install:
   - python setup.py install
 
 script:
-  - nosetests --with-coverage --cover-package=abcFinance examples/tdd.py
+  - nosetests --with-coverage --cover-package=abcFinance examples/test_tdd.py
 
 after_success:
   - coveralls
