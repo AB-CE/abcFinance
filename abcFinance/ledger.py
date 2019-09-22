@@ -139,23 +139,25 @@ class Ledger:
 
         for name, value in debit:
             account = self.accounts[name]
-            account.add_debit(value)
-            side, _ = account.get_balance()
+            account.debit += value
             if name in self.asset_accounts:
-                assert side != AccountSide.CREDIT, (side, _)
+                side, _ = account.get_balance()
+                assert side != AccountSide.CREDIT
             elif name in self.liability_accounts:
-                assert side != AccountSide.DEBIT, (side, _)
+                side, _ = account.get_balance()
+                assert side != AccountSide.DEBIT
             sum_debit += value
 
         for name, value in credit:
             assert value >= 0
             account = self.accounts[name]
-            account.add_credit(value)
-            side, _ = account.get_balance()
+            account.credit += value
             if name in self.asset_accounts:
-                assert side != AccountSide.CREDIT, (side, _)
+                side, _ = account.get_balance()
+                assert side != AccountSide.CREDIT
             elif name in self.liability_accounts:
-                assert side != AccountSide.DEBIT, (side, _)
+                side, _ = account.get_balance()
+                assert side != AccountSide.DEBIT
             sum_credit += value
 
         assert sum_debit == sum_credit
