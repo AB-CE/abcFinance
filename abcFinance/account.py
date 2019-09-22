@@ -56,10 +56,11 @@ class AccountWithHistory(Account):
         self.debit_history = []
         self.credit_history = []
 
-    def add_debit(self, value):
-        self.debit += value
-        self.debit_history.append(value)
-
-    def add_credit(self, value):
-        self.credit += value
-        self.credit_history.append(value)
+    def __setattr__(self, name, value):
+        if name == 'debit' and hasattr(self, 'debit'):
+            assert value >= self.debit
+            self.debit_history.append(value)
+        if name == 'credit' and hasattr(self, 'credit'):
+            assert value >= self.credit
+            self.credit_history.append(value)
+        return super().__setattr__(name, value)
