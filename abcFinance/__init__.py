@@ -5,11 +5,11 @@ Created on Sun May  6 18:59:39 2018
 @author: christoph
 """
 
-import abce
 from .ledger import Ledger
 from .account import Account, AccountSide
 
-
+"""
+import abce
 class Agent(abce.Agent):
     def __init__(self, *param, **kwparam):
         super().__init__(*param, **kwparam)
@@ -27,3 +27,4 @@ class Agent(abce.Agent):
 
     def _autobook(self, msg):
         self.accounts.book(**msg.content)
+"""

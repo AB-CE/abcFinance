@@ -8,4 +8,8 @@ __pycache__/
 .vs
 abcFinance.pyproj*
 env
+abce
 *.sln
+*.pyperf
+TestSettings1.testsettings
+.vscode

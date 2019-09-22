@@ -2,6 +2,8 @@
 """
 Created on Wed May  2 15:23:48 2018
 
+This file demonstrates how a generic IFRS-style balance sheet and profit and loss statement can be implemented in abcFinance
+
 @author: christoph
 """
 
