@@ -3,15 +3,15 @@
 abcFinance (short for 'agent-based computational Finance') provides tools for using standard double-entry bookkeeping methods either directly or within an agent-based modelling framework. It is a sister library to the [abcEconomics](https://github.com/AB-CE/abce) (agent-based computational Economics) library.
 
 ## Direct use of double-entry bookkeeping tools
-The class `Ledger` implements an accounting system. Booking statements are recorded through the `book()` method. The basic syntax works as follows:
+The `Ledger` class implements an accounting system. Booking statements are recorded through the `book()` method. The basic syntax works as follows:
 
     accountingsystem = Ledger()
     accountingsystem.make_stock_accounts('Assets', 'Liabilities')
     accountingsystem.book(debit=[('Assets',100)], credit=[('Liabilities',100)]
 
-where `debit` and `credit` are lists of tuples `('account', amount)` of accounts that should be booked by `amount` on the debit and credit side, respectively. The total sum of debits and credits in one booking statement needs to be equal in one booking statement. Accounts have to be declared as either stock or flow accounts before they can be booked. 
+where `debit` and `credit` are lists of tuples `('account', amount)` of accounts that should be booked by `amount` on the debit and credit side, respectively. The total sum of debits and credits needs to be equal in one booking statement. Accounts have to be declared as either stock or flow accounts before they can be booked. 
 
-A profit and loss statement can be viewed using the `print_profit_and_loss()` statement. The profit or loss for the period can be booked against equity using the `book_end_of_period()` method. The balance sheet can be printed using the `print_balance_sheet()` method. `draw_balance_sheet()` returns the string representation of an SVG image of the balance sheet. Several other helpful methods are available.
+The balance sheet is composed of all stock accounts and includes an equity account whose name can be set using the optional `residual_account_name` flag in the constructor of `Ledger`. The profit and loss statement is composed of all flow accounts. It can be viewed using the `print_profit_and_loss()` statement. The profit or loss for the period can be booked against equity using the `book_end_of_period()` method, which also resets all flow accounts. The balance sheet can be printed using the `print_balance_sheet()` method. `draw_balance_sheet()` returns the string representation of an SVG image of the balance sheet. Several other helpful methods are available.
 
 Extensive examples can be found in the `examples\money_creation` folder.
 
