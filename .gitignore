@@ -13,3 +13,4 @@ abce
 *.pyperf
 TestSettings1.testsettings
 .vscode
+venv
