@@ -14,3 +14,6 @@ abce
 TestSettings1.testsettings
 .vscode
 venv
+abcFinance.egg-info
+dist
+build
