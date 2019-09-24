@@ -1,1 +1,0 @@
-The files in this folder are related to the topic of the paper "Money creation and liquid funding needs are compatible", but either in development status (i.e. not tested and not guaranteed to be functional) or not directly relevant to what is said in the paper.
