@@ -1,0 +1,1 @@
+The test case in `test_tdd.py` contains one example booking case. The `IFRS.py` file contains an example implementation of a generic IFRS accounting framework, as a proof-of-concept that this can be realized in abcFinance, and also as a template to build from. More examples will be added, at the moment the best examples are contained in the `money_cration` subfolder.
