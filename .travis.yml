@@ -1,14 +1,14 @@
 language: python
 
 python:
-  - "3.5"
+  - "3.7"
 
 install:
   - pip install coveralls abcEconomics
   - python setup.py install
 
 script:
-  - nosetests --with-coverage --cover-package=abcFinance examples/tdd.py
+  - nosetests --with-coverage --cover-package=abcFinance examples/test_tdd.py
 
 after_success:
   - coveralls

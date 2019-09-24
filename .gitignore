@@ -13,3 +13,9 @@ abce
 *.pyperf
 TestSettings1.testsettings
 .vscode
+venv
+abcFinance.egg-info
+dist
+build
+.coverage
+.noseids
